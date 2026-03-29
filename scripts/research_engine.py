@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Deep Research Engine for Claude Code
-Orchestrates comprehensive research across multiple sources with verification and synthesis
+Codex research engine scaffold.
+Prints structured phase instructions and writes run artifacts to disk.
 """
 
 import argparse
@@ -122,10 +122,10 @@ class ResearchState:
 class ResearchEngine:
     """Main research orchestration engine"""
 
-    def __init__(self, mode: ResearchMode = ResearchMode.STANDARD):
+    def __init__(self, mode: ResearchMode = ResearchMode.STANDARD, output_dir: Optional[Path] = None):
         self.mode = mode
         self.state: Optional[ResearchState] = None
-        self.output_dir = Path.home() / ".claude" / "research_output"
+        self.output_dir = output_dir or (Path.cwd() / "research_output")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def initialize_research(self, query: str) -> ResearchState:
@@ -448,8 +448,8 @@ Save report to file with timestamp.
         instructions = self.get_phase_instructions(phase)
         print(instructions)
 
-        # In real usage, Claude will execute these instructions
-        # This returns a structured result that Claude should populate
+        # In real usage, the agent executes these instructions.
+        # Return a minimal structured phase marker for state persistence.
         result = {
             'phase': phase.value,
             'status': 'instructions_displayed',
@@ -521,7 +521,7 @@ Save report to file with timestamp.
 def main():
     """CLI entry point"""
     parser = argparse.ArgumentParser(
-        description="Deep Research Engine for Claude Code",
+        description="Codex deep research engine scaffold",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -552,11 +552,18 @@ Examples:
         help='Resume from saved state file'
     )
 
+    parser.add_argument(
+        '--output-dir',
+        type=Path,
+        default=Path.cwd() / "research_output",
+        help='Directory for run artifacts (default: ./research_output)'
+    )
+
     args = parser.parse_args()
 
     # Initialize engine
     mode = ResearchMode(args.mode)
-    engine = ResearchEngine(mode=mode)
+    engine = ResearchEngine(mode=mode, output_dir=args.output_dir)
 
     if args.resume:
         # Load previous state
@@ -571,7 +578,7 @@ Examples:
     report_path = engine.run_pipeline(args.query)
 
     print(f"\nResearch complete! Report path: {report_path}")
-    print(f"\nNow Claude should execute each phase using the displayed instructions.")
+    print("\nNext step: execute the printed phase instructions in your Codex workflow.")
 
 
 if __name__ == '__main__':

@@ -56,7 +56,7 @@ class CitationVerifier:
             with open(self.report_path, 'r', encoding='utf-8') as f:
                 return f.read()
         except Exception as e:
-            print(f"L ERROR: Cannot read report: {e}")
+            print(f"ERROR: Cannot read report: {e}")
             sys.exit(1)
 
     def extract_bibliography(self) -> List[Dict]:
@@ -260,7 +260,7 @@ class CitationVerifier:
             if success:
                 result['metadata'] = metadata
                 result['status'] = 'verified'
-                print("")
+                print("OK")
 
                 # Check title similarity if we have both
                 if entry['title'] and metadata.get('title'):
@@ -317,7 +317,7 @@ class CitationVerifier:
         entries = self.extract_bibliography()
 
         if not entries:
-            print("L No bibliography entries found\n")
+            print("ERROR: No bibliography entries found\n")
             return False
 
         print(f"Found {len(entries)} citations\n")

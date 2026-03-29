@@ -4,10 +4,11 @@ Citation Management System
 Tracks sources, generates citations, and maintains bibliography
 """
 
+import argparse
+import json
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 from datetime import datetime
-from urllib.parse import urlparse
 import hashlib
 
 
@@ -116,7 +117,7 @@ class CitationManager:
 
         return "Unsupported citation style"
 
-    def get_statistics(self) -> Dict[str, any]:
+    def get_statistics(self) -> Dict[str, Any]:
         """Get citation statistics"""
         return {
             'total_sources': len(self.citations),
@@ -153,25 +154,46 @@ class CitationManager:
             f.write(self.generate_bibliography(style))
 
 
-# Example usage
-if __name__ == '__main__':
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Manage and inspect citation data",
+        epilog="Example: python scripts/citation_manager.py --demo --json"
+    )
+    parser.add_argument("--demo", action="store_true", help="Run with built-in demo sources")
+    parser.add_argument("--json", action="store_true", help="Print output as JSON")
+    parser.add_argument("--export", type=str, help="Write generated bibliography to this file")
+    args = parser.parse_args()
+
     manager = CitationManager()
 
-    # Add sources
-    id1 = manager.add_source(
-        url="https://example.com/article1",
-        title="Understanding Deep Research",
-        authors=["Smith, J.", "Johnson, K."],
-        publication_date="2025"
-    )
+    if args.demo:
+        manager.add_source(
+            url="https://example.com/article1",
+            title="Understanding Deep Research",
+            authors=["Smith, J.", "Johnson, K."],
+            publication_date="2025"
+        )
+        manager.add_source(
+            url="https://example.com/article2",
+            title="AI Research Methods",
+            source_type="academic"
+        )
 
-    id2 = manager.add_source(
-        url="https://example.com/article2",
-        title="AI Research Methods",
-        source_type="academic"
-    )
+    if args.export:
+        manager.export_to_file(args.export)
 
-    # Use citations
-    print(f"Inline citation: {manager.get_inline_citation(id1)}")
-    print(f"\nBibliography:\n{manager.generate_bibliography()}")
-    print(f"\nStatistics:\n{manager.get_statistics()}")
+    if args.json:
+        payload = {
+            "stats": manager.get_statistics(),
+            "bibliography_markdown": manager.generate_bibliography()
+        }
+        print(json.dumps(payload, indent=2, default=str))
+    else:
+        print(manager.generate_bibliography())
+        print(f"\nStats: {manager.get_statistics()}")
+
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
