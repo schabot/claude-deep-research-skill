@@ -1,101 +1,184 @@
 ---
 name: deep-research
-description: Conducts enterprise-grade research with multi-source synthesis, citation tracking, and verification. Produces citation-backed reports through a structured pipeline with source credibility scoring. Triggers on "deep research", "comprehensive analysis", "research report", "compare X vs Y", "analyze trends", or "state of the art". Not for simple lookups, debugging, or questions answerable with 1-2 searches.
+description: Codex-native deep research workflow for multi-source synthesis, citation tracking, and validated report generation with explicit file artifacts.
+version: 3.0.0
+owners:
+  - repository-maintainers
+triggers:
+  - deep research
+  - comprehensive analysis
+  - research report
+  - compare x vs y
+  - analyze trends
+  - state of the art
 ---
 
-# Deep Research
+# Deep Research (Codex-Native)
 
-## Core Purpose
+## Purpose
 
-Deliver citation-backed, verified research reports through a structured pipeline with source credibility scoring, evidence persistence, and progressive context management.
-
-**Autonomy Principle:** Operate independently. Infer assumptions from context. Only stop for critical errors or incomprehensible queries.
+Deliver citation-backed, verifiable research reports through a structured pipeline that preserves the existing methodology while using Codex shell-first execution and explicit artifact outputs.
 
 ---
 
-## Decision Tree
+## When to Use
 
+Use this skill when the task requires:
+- Multi-source research and synthesis (not a quick lookup)
+- Evidence tracking and citation hygiene
+- Structured report output (Markdown + HTML, optional PDF)
+- Validation before delivery
+
+## When NOT to Use
+
+Do **not** use this skill for:
+- Simple factual lookups answerable in 1-2 searches
+- Pure debugging tasks
+- Small edits that do not require full research workflow
+- Time-critical requests where exhaustive validation cannot be completed
+
+---
+
+## Research Modes
+
+| Mode | Phases | Typical Duration | Best For |
+|------|--------|------------------|----------|
+| quick | 3 | 2-5 min | Initial exploration |
+| standard (default) | 6 | 5-10 min | Most research requests |
+| deep | 8 | 10-20 min | High-stakes or complex decisions |
+| ultradeep | 8+ | 20-45 min | Maximum rigor/comprehensive reviews |
+
+Phase mapping and quality expectations remain defined in the reference docs.
+
+---
+
+## Methodology Sources (Keep Intact)
+
+Load references progressively (only what is needed for the current phase):
+
+1. Pipeline phases (1-7): `reference/methodology.md`
+2. Packaging and section assembly: `reference/report-assembly.md`
+3. HTML conversion and presentation: `reference/html-generation.md`
+4. Quality checks and validation loop: `reference/quality-gates.md`
+5. Continuation protocol for long reports: `reference/continuation.md`
+
+Templates:
+- Markdown report skeleton: `templates/report_template.md`
+- HTML template: `templates/mckinsey_report_template.html`
+
+---
+
+## Codex Workflow (Explicit)
+
+### Step 0 - Initialize workspace
+1. Determine report topic slug and date (`YYYYMMDD`).
+2. Create output folder:
+   - `./[Topic]_Research_[YYYYMMDD]/` (relative to current working folder)
+3. Define artifact paths:
+   - Markdown: `research_report_[YYYYMMDD]_[topic].md`
+   - HTML: `research_report_[YYYYMMDD]_[topic].html`
+   - PDF (optional): `research_report_[YYYYMMDD]_[topic].pdf`
+   - Source state: `sources.json`
+
+### Step 1 - Scope and plan
+- Execute SCOPE and PLAN phases from `reference/methodology.md`.
+- Confirm boundaries, assumptions, query strategy, and quality gates.
+
+### Step 2 - Retrieve and triangulate
+- Run RETRIEVE phase with parallelizable search angles where possible.
+- Capture source metadata and evidence snippets into `sources.json`.
+- Run TRIANGULATE to verify major claims across independent sources.
+
+### Step 3 - Synthesize and critique (mode-dependent)
+- Generate findings and cross-source synthesis.
+- In deep/ultradeep, run CRITIQUE and REFINE loops.
+
+### Step 4 - Package output artifacts
+- Build markdown report progressively using `templates/report_template.md` structure.
+- Ensure bibliography is complete and numbered correctly.
+- Convert markdown to HTML using script calls below.
+- Generate PDF optionally (WeasyPrint guidance in `reference/weasyprint_guidelines.md`).
+
+---
+
+## Script Calls (Explicit)
+
+From repository root:
+
+```bash
+python scripts/validate_report.py --report [markdown_report_path]
+python scripts/verify_citations.py --report [markdown_report_path]
+python scripts/md_to_html.py [markdown_report_path]
+python scripts/verify_html.py --html [html_report_path] --md [markdown_report_path]
 ```
-Request Analysis
-+-- Simple lookup? --> STOP: Use WebSearch
-+-- Debugging? --> STOP: Use standard tools
-+-- Complex analysis needed? --> CONTINUE
 
-Mode Selection
-+-- Initial exploration --> quick (3 phases, 2-5 min)
-+-- Standard research --> standard (6 phases, 5-10 min) [DEFAULT]
-+-- Critical decision --> deep (8 phases, 10-20 min)
-+-- Comprehensive review --> ultradeep (8+ phases, 20-45 min)
+Optional engine scaffolding:
+
+```bash
+python scripts/research_engine.py --query "[research question]" --mode [quick|standard|deep|ultradeep]
 ```
 
-**Default assumptions:** Technical query = technical audience. Comparison = balanced perspective. Trend = recent 1-2 years.
-
 ---
 
-## Workflow Overview
+## Output Artifacts (Required)
 
-| Phase | Name | Quick | Standard | Deep | UltraDeep |
-|-------|------|-------|----------|------|-----------|
-| 1 | SCOPE | Y | Y | Y | Y |
-| 2 | PLAN | - | Y | Y | Y |
-| 3 | RETRIEVE | Y | Y | Y | Y |
-| 4 | TRIANGULATE | - | Y | Y | Y |
-| 4.5 | OUTLINE REFINEMENT | - | Y | Y | Y |
-| 5 | SYNTHESIZE | - | Y | Y | Y |
-| 6 | CRITIQUE | - | - | Y | Y |
-| 7 | REFINE | - | - | Y | Y |
-| 8 | PACKAGE | Y | Y | Y | Y |
+Each run must produce (at minimum):
+1. **Markdown report** (source of truth)
+2. **HTML report** (rendered presentation)
+3. **`sources.json`** (durable source/citation tracking)
 
----
+Optional:
+4. **PDF report** (print-ready)
 
-## Execution
-
-**On invocation, load relevant reference files:**
-
-1. **Phase 1-7:** Load [methodology.md](./reference/methodology.md) for detailed phase instructions
-2. **Phase 8 (Report):** Load [report-assembly.md](./reference/report-assembly.md) for progressive generation
-3. **HTML/PDF output:** Load [html-generation.md](./reference/html-generation.md)
-4. **Quality checks:** Load [quality-gates.md](./reference/quality-gates.md)
-5. **Long reports (>18K words):** Load [continuation.md](./reference/continuation.md)
-
-**Templates:**
-- Report structure: [report_template.md](./templates/report_template.md)
-- HTML styling: [mckinsey_report_template.html](./templates/mckinsey_report_template.html)
-
-**Scripts:**
-- `python scripts/validate_report.py --report [path]`
-- `python scripts/verify_citations.py --report [path]`
-- `python scripts/md_to_html.py [markdown_path]`
-
----
-
-## Output Contract
-
-**Required sections:**
-- Executive Summary (200-400 words)
-- Introduction (scope, methodology, assumptions)
-- Main Analysis (4-8 findings, 600-2,000 words each, cited)
-- Synthesis & Insights (patterns, implications)
+Report content requirements:
+- Executive Summary
+- Introduction (scope/methodology/assumptions)
+- Main Analysis (evidence-backed findings)
+- Synthesis & Insights
 - Limitations & Caveats
 - Recommendations
-- Bibliography (COMPLETE - every citation, no placeholders)
+- Bibliography (complete; no placeholders)
 - Methodology Appendix
-
-**Output files (all to `~/Documents/[Topic]_Research_[YYYYMMDD]/`):**
-- Markdown (primary source)
-- HTML (McKinsey style, auto-opened)
-- PDF (professional print, auto-opened)
-
-**Quality standards:**
-- 10+ sources, 3+ per major claim
-- All claims cited immediately [N]
-- No placeholders, no fabricated citations
-- Prose-first (>=80%), bullets sparingly
 
 ---
 
-## When to Use / NOT Use
+## Validation Contract
 
-**Use:** Comprehensive analysis, technology comparisons, state-of-the-art reviews, multi-perspective investigation, market analysis.
+Run validation loop before delivery:
 
-**Do NOT use:** Simple lookups, debugging, 1-2 search answers, quick time-sensitive queries.
+1. `validate_report.py`
+2. `verify_citations.py`
+3. (if HTML generated) `verify_html.py`
+
+If any validation fails:
+- Fix the reported issue(s)
+- Re-run all required validators
+- Maximum 3 fix cycles
+
+Do not deliver final output if critical checks still fail.
+
+---
+
+## Failure Handling
+
+Stop and report clearly when any of the following occurs:
+- Fewer than 5 credible sources after exhaustive retrieval
+- Bibliography/citation mismatch that cannot be resolved after retries
+- Repeated validation failure after 3 cycles
+- Scope becomes ambiguous or incompatible with available evidence
+
+Failure report format:
+- **Issue:** what failed
+- **Context:** what was attempted
+- **Tried:** remediation steps already taken
+- **Next options:** 1-2 concrete paths to proceed
+
+---
+
+## Quality Standards (Non-Negotiable)
+
+- 10+ sources preferred (document shortfall if not achievable)
+- Major claims supported by 3+ independent sources when possible
+- Immediate claim-level citation placement `[N]`
+- No fabricated citations, placeholders, or truncated bibliography entries
+- Prose-first writing style with precise, evidence-rich statements
