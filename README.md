@@ -1,4 +1,22 @@
-# Deep Research Skill for Claude Code
+# Deep Research Skill for Codex (Port of the Claude Skill)
+
+This repository is a **Codex-native fork and port** of the original **Deep Research Skill for Claude Code** by [199-biotechnologies](https://github.com/199-biotechnologies/claude-deep-research-skill).
+
+## Project Goal
+
+The goal of this project is to preserve the proven research workflow from the Claude skill while adapting it to Codex-native conventions, tooling, and ergonomics.
+
+Specifically, this fork focuses on:
+- Porting the skill architecture and prompts to work cleanly in Codex environments
+- Maintaining citation quality, validation rigor, and report structure guarantees
+- Improving interoperability with Codex tooling and workflows
+- Keeping a clear upgrade path from upstream changes where practical
+
+## Upstream Credit & Fork Policy
+
+- **Original project:** [199-biotechnologies/claude-deep-research-skill](https://github.com/199-biotechnologies/claude-deep-research-skill)
+- This repository reuses and adapts concepts, structure, and implementation details from the upstream project.
+- Please star and review the upstream repository for the original implementation and ongoing Claude-focused improvements.
 
 Enterprise-grade research engine for Claude Code. Produces citation-backed reports with source credibility scoring, multi-provider search, and automated validation.
 
