@@ -146,7 +146,7 @@ Port this repository from a Claude-oriented deep-research skill to a Codex-nativ
 5. **Cross-doc inconsistency:** SKILL/README/reference docs can diverge unless updated together.
 
 ### Operational unknowns
-1. Preferred long-term Codex output root (repo-local vs `~/Documents/...` vs configurable-only).
+1. Preferred long-term Codex output root (current working folder vs configurable-only).
 2. Whether continuation should remain instruction-only or gain an executable helper script.
 3. Degree of backward-compatibility desired for users migrating from Claude folder conventions.
 4. Whether to keep upstream-oriented Claude attribution in README as historical context or reduce it further.
