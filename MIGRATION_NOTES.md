@@ -153,3 +153,21 @@ Performed a targeted audit against the upstream repository to explain two failur
 - Add deterministic continuation state machine with append-only section completion.
 - Add per-section minimum enforcement and total-length target enforcement by mode.
 - Add compatibility tests for markdown→HTML placeholders, bibliography parsing, and section parity.
+
+## 2026-04-03 - Forensic execution audit (short-output + HTML degradation)
+
+### Summary of verified execution reality
+- `scripts/research_engine.py` is an instruction-printing scaffold; it does not execute retrieval/synthesis or write markdown report content.
+- Continuation protocol is documentation-only (`reference/continuation.md`), not executable orchestration.
+- Mode length targets are documentation-only (`reference/report-assembly.md`) and not enforced by validators (`scripts/validate_report.py` warns only when report is <500 words).
+- HTML quality degradation is largely upstream-thinning, with additional converter brittleness around bibliography/citation parsing (`scripts/md_to_html.py`).
+
+### Decisions/tradeoffs recorded
+- Prioritize orchestration and contract enforcement ahead of visual styling changes.
+- Treat HTML renderer quality issues as secondary until markdown depth and structure are enforced.
+- Preserve current template while hardening converter behavior and parity checks.
+
+### Open items requiring human decision
+1. Whether mode length gates should hard-fail by default or allow explicit override flags.
+2. Whether continuation should be built into `research_engine.py` or as a dedicated continuation runner script.
+3. Whether to preserve the current HTML template style or converge to benchmark-style custom components.
