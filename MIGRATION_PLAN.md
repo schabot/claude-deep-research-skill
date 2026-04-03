@@ -160,3 +160,18 @@ Port this repository from a Claude-oriented deep-research skill to a Codex-nativ
   - `python scripts/md_to_html.py --help`
   - `python scripts/verify_html.py --help`
 - Record final decisions and any deferred follow-ups in `MIGRATION_NOTES.md`.
+
+---
+
+## 6) Concrete implementation sequencing (execution-focused)
+
+The migration scope now includes a concrete runtime implementation plan in `CODEX_PORT_IMPLEMENTATION_PLAN.md`.
+
+Execution order is updated to:
+1. Define contracts/schemas for mode thresholds, required sections, and continuation state.
+2. Rewrite `scripts/research_engine.py` into an executable orchestrator with persisted continuation.
+3. Add section assembly + continuation runner modules.
+4. Add unified validation gate runner and block packaging on failed critical gates.
+5. Harden markdown→HTML conversion + parity verification and add regression fixtures/tests.
+
+This extends the prior migration plan from wording/path neutrality into executable runtime parity for deep/ultradeep behavior.
