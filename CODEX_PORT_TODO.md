@@ -10,7 +10,7 @@ Use this checklist as the implementation tracker for the Codex runtime port. Eac
 ---
 
 ## Package 0 — Contracts and schemas (foundational)
-- [ ] **Define shared runtime contracts in code/config**
+- [x] **Define shared runtime contracts in code/config**
   - **Deliverables**
     - `scripts/contracts.py` with mode thresholds, cycle limits, required section specs, citation minima, gate names.
     - `schemas/report_contract.schema.json` for mode + section requirements.
@@ -20,7 +20,7 @@ Use this checklist as the implementation tracker for the Codex runtime port. Eac
     - Required sections + minima are represented in one canonical location (no duplicated hardcoded thresholds).
     - Schemas validate representative sample files.
 
-- [ ] **Codify finalization policy**
+- [x] **Codify finalization policy**
   - **Deliverables**
     - A contract-level definition of critical vs non-critical gates.
     - Override semantics for `--allow-below-minimum` and `--skip-html`.

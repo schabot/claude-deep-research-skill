@@ -213,3 +213,24 @@ Addressed review feedback by restoring `CODEX_PORT_IMPLEMENTATION_PLAN.md` to it
 ### Open items requiring human decision
 1. Confirm canonical filename preference for the execution checklist (`CODEX_PORT_TODO.md` vs `IMPLEMENTATION_TODO.md`).
 2. Confirm whether completion tracking should occur only in-repo or be mirrored in external project tooling.
+
+## 2026-04-03 - Package 0 implementation (contracts + finalization policy)
+
+### What was implemented
+- Added `scripts/contracts.py` as the canonical runtime contract module for modes, cycle limits, required section minima, citation minima, gate names, and override sets.
+- Added `FinalizationPolicyInput`, `FinalizationPolicyDecision`, and `evaluate_finalization_policy(...)` so finalize decisions can be computed independently of full engine execution.
+- Added `schemas/report_contract.schema.json` for mode/section/gate contract validation.
+- Added `schemas/continuation_state.schema.json` for persisted continuation-state validation.
+- Updated `CODEX_PORT_TODO.md` to mark both Package 0 tasks complete.
+
+### Decisions and tradeoffs
+- Kept contract values in Python for immediate runtime consumption and mirrored constraints in JSON Schema for machine-validation/tooling compatibility.
+- Mode-aware section minima are centralized under one canonical structure (`REQUIRED_SECTIONS`) to avoid duplicated thresholds across scripts.
+- Override semantics are explicit and narrow:
+  - `--allow-below-minimum` can only ignore section-minimum and mode-length failures.
+  - `--skip-html` can only ignore HTML parity gate failures.
+
+### Open items
+- Wire `scripts/research_engine.py` and forthcoming gate runners to consume `scripts/contracts.py` directly (Package 1+).
+- Add automated schema-validation tests against representative sample artifacts (Package 5).
+

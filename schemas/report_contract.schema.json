@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/report_contract.schema.json",
+  "title": "Report Contract",
+  "type": "object",
+  "required": [
+    "modes",
+    "required_sections",
+    "gate_names",
+    "critical_gates"
+  ],
+  "properties": {
+    "modes": {
+      "type": "object",
+      "required": ["quick", "standard", "deep", "ultradeep"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(quick|standard|deep|ultradeep)$": {
+          "type": "object",
+          "required": ["min_words", "max_words", "min_unique_citations", "max_cycles"],
+          "additionalProperties": false,
+          "properties": {
+            "min_words": {"type": "integer", "minimum": 1},
+            "max_words": {"type": "integer", "minimum": 1},
+            "min_unique_citations": {"type": "integer", "minimum": 1},
+            "max_cycles": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+    "required_sections": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["quick", "standard", "deep", "ultradeep"],
+        "additionalProperties": false,
+        "properties": {
+          "quick": {"type": "integer", "minimum": 1},
+          "standard": {"type": "integer", "minimum": 1},
+          "deep": {"type": "integer", "minimum": 1},
+          "ultradeep": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "gate_names": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "critical_gates": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "overrides": {
+      "type": "object",
+      "properties": {
+        "allow_below_minimum": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "skip_html": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
