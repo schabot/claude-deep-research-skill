@@ -171,3 +171,18 @@ Performed a targeted audit against the upstream repository to explain two failur
 1. Whether mode length gates should hard-fail by default or allow explicit override flags.
 2. Whether continuation should be built into `research_engine.py` or as a dedicated continuation runner script.
 3. Whether to preserve the current HTML template style or converge to benchmark-style custom components.
+
+## 2026-04-03 - Concrete implementation plan for executable Codex runtime
+
+### Summary
+Converted forensic diagnosis into an execution-ready implementation plan (`CODEX_PORT_IMPLEMENTATION_PLAN.md`) with explicit architecture, gating, continuation-state contract, execution order, and iteration sequencing.
+
+### Decisions/tradeoffs recorded
+- Prioritize an MVP "real runtime" (executable orchestration + continuation + gates) before advanced retrieval adapters.
+- Keep existing HTML template styling with targeted compatibility changes; focus first on markdown depth and section/citation parity.
+- Introduce hard mode gates by default with explicit override flag (`--allow-below-minimum`) to preserve operator control while preventing silent under-delivery.
+
+### Open items requiring human decision
+1. Confirm final per-mode minimum thresholds (especially deep vs ultradeep lower bounds).
+2. Confirm whether HTML parity failures should always block packaging or be overridable in CI-only contexts.
+3. Confirm whether continuation execution remains integrated in `research_engine.py` or delegated by default to a dedicated runner script.
