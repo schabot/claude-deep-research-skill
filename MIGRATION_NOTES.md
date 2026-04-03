@@ -131,3 +131,25 @@ Goals:
 ### Decision
 
 No change to `MIGRATION_PLAN.md` yet. The current plan remains valid, but it should be understood as incomplete if the goal is not just migration, but also meaningful research-quality improvement.
+
+## 2026-04-03 - Port divergence audit focused on report depth + HTML quality
+
+### Context
+Performed a targeted audit against the upstream repository to explain two failures observed in this port:
+1) materially shorter reports in deep/ultradeep runs;
+2) materially weaker rendered HTML quality.
+
+### Key decisions/tradeoffs captured
+- Treat this as an **orchestration-contract issue first**, not a styling-only issue.
+- Preserve the existing converter/template path for now, but prioritize report-structure enforcement before visual tuning.
+- Use a Codex-native redesign for continuation/runtime gates rather than literal Claude-runtime emulation.
+
+### Open items requiring human decision
+1. Should deep/ultradeep length gates be hard-fail defaults, or soft warnings with override flags?
+2. Should this repo re-align to upstream template/converter contract, or intentionally maintain a forked HTML schema?
+3. Should continuation be fully automated in `research_engine.py`, or split into a separate executable runner?
+
+### Deferred implementation work
+- Add deterministic continuation state machine with append-only section completion.
+- Add per-section minimum enforcement and total-length target enforcement by mode.
+- Add compatibility tests for markdown→HTML placeholders, bibliography parsing, and section parity.
