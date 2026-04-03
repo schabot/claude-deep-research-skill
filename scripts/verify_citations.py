@@ -19,6 +19,7 @@ Does NOT require API keys - uses free DOI resolver and heuristics.
 import sys
 import argparse
 import re
+import ssl
 from pathlib import Path
 from typing import List, Dict, Tuple
 from urllib import request, error
@@ -26,6 +27,11 @@ from urllib.parse import quote
 import json
 import time
 from datetime import datetime
+
+try:
+    import certifi  # type: ignore
+except ImportError:
+    certifi = None
 
 class CitationVerifier:
     """Verify citations in research report"""
@@ -126,7 +132,7 @@ class CitationVerifier:
             req = request.Request(url)
             req.add_header('Accept', 'application/vnd.citationstyles.csl+json')
 
-            with request.urlopen(req, timeout=10) as response:
+            with self._open_url(req, timeout=10) as response:
                 data = json.loads(response.read().decode('utf-8'))
 
                 return True, {
@@ -142,6 +148,8 @@ class CitationVerifier:
             if e.code == 404:
                 return False, {'error': 'DOI not found (404)'}
             return False, {'error': f'HTTP {e.code}'}
+        except ssl.SSLCertVerificationError as e:
+            return False, {'error': f'SSL certificate verification failed: {e}'}
         except Exception as e:
             return False, {'error': str(e)}
 
@@ -158,17 +166,48 @@ class CitationVerifier:
             req = request.Request(url, method='HEAD')
             req.add_header('User-Agent', 'Mozilla/5.0 (Research Citation Verifier)')
 
-            with request.urlopen(req, timeout=10) as response:
+            with self._open_url(req, timeout=10) as response:
                 if response.status == 200:
                     return True, "URL accessible"
                 else:
                     return False, f"HTTP {response.status}"
         except error.HTTPError as e:
             return False, f"HTTP {e.code}"
+        except ssl.SSLCertVerificationError as e:
+            return False, f"SSL certificate verification failed: {e}"
         except error.URLError as e:
-            return False, f"URL error: {e.reason}"
+            reason = e.reason
+            if isinstance(reason, ssl.SSLCertVerificationError):
+                return False, f"SSL certificate verification failed: {reason}"
+            return False, f"URL error: {reason}"
         except Exception as e:
             return False, f"Connection error: {str(e)[:50]}"
+
+    def _ssl_context_candidates(self) -> List[Tuple[str, ssl.SSLContext]]:
+        """Build SSL contexts to try for outbound verification."""
+        contexts: List[Tuple[str, ssl.SSLContext]] = [("system", ssl.create_default_context())]
+        if certifi is not None:
+            contexts.append(("certifi", ssl.create_default_context(cafile=certifi.where())))
+        return contexts
+
+    def _open_url(self, req: request.Request, timeout: int = 10):
+        """
+        Open a URL using the best available SSL context.
+        Retries with certifi when installed if the system trust store fails.
+        """
+        ssl_errors = []
+        for context_name, context in self._ssl_context_candidates():
+            try:
+                return request.urlopen(req, timeout=timeout, context=context)
+            except ssl.SSLCertVerificationError as e:
+                ssl_errors.append(f"{context_name}: {e}")
+            except error.URLError as e:
+                if isinstance(e.reason, ssl.SSLCertVerificationError):
+                    ssl_errors.append(f"{context_name}: {e.reason}")
+                    continue
+                raise
+
+        raise ssl.SSLCertVerificationError("; ".join(ssl_errors) if ssl_errors else "SSL certificate verification failed")
 
     def detect_hallucination_patterns(self, entry: Dict) -> List[str]:
         """
@@ -340,10 +379,17 @@ class CitationVerifier:
         suspicious = [r for r in results if r['status'] == 'suspicious']
         unverified = [r for r in results if r['status'] in ['unverified', 'no_doi', 'unknown']]
 
+        ssl_blocked = [
+            r for r in results
+            if any('SSL certificate verification failed' in issue for issue in r['issues'])
+        ]
+
         print(f'DOI Verified: {len(verified)}/{len(results)}')
         print(f'URL Verified: {len(url_verified)}/{len(results)}')
         print(f'Suspicious: {len(suspicious)}/{len(results)}')
         print(f'Unverified: {len(unverified)}/{len(results)}')
+        if ssl_blocked:
+            print(f'SSL Blocked: {len(ssl_blocked)}/{len(results)}')
         print()
 
         if suspicious:
@@ -359,6 +405,10 @@ class CitationVerifier:
             for r in unverified:
                 print(f"  [{r['num']}] {r['issues'][0] if r['issues'] else 'Unknown'}")
             print()
+
+        if ssl_blocked:
+            print('NOTE: Some citations were unreachable due to SSL trust configuration in the current environment.')
+            print('      This is different from a true missing URL or DOI failure.\n')
 
         # Decision (Enhanced 2025 - includes URL-verified as acceptable)
         total_verified = len(verified) + len(url_verified)
@@ -393,6 +443,7 @@ Examples:
 
 Note: Requires internet connection to check DOIs.
 Uses free DOI resolver - no API key needed.
+If SSL trust is misconfigured in the current environment, citations may be reported as SSL-blocked rather than truly unverified.
         """
     )
 

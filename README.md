@@ -1,6 +1,6 @@
-# Deep Research Skill for Codex (Port of the Claude Skill)
+# Deep Research Skill for Codex
 
-This repository is a **Codex-native fork and port** of the original **Deep Research Skill for Claude Code** by [199-biotechnologies](https://github.com/199-biotechnologies/claude-deep-research-skill).
+This repository is a **Codex-native fork and port** of the original deep-research skill by [199-biotechnologies](https://github.com/199-biotechnologies/claude-deep-research-skill).
 
 ## Project Goal
 
@@ -18,13 +18,13 @@ Specifically, this fork focuses on:
 - This repository reuses and adapts concepts, structure, and implementation details from the upstream project.
 - Please star and review the upstream repository for the original implementation and ongoing Claude-focused improvements.
 
-Enterprise-grade research engine for Claude Code. Produces citation-backed reports with source credibility scoring, multi-provider search, and automated validation.
+Enterprise-grade research engine for Codex-oriented environments. Produces citation-backed reports with source credibility scoring, multi-provider search, and automated validation.
 
 ## Installation
 
 ```bash
-# Clone into Claude Code skills directory
-git clone https://github.com/199-biotechnologies/claude-deep-research-skill.git ~/.claude/skills/deep-research
+# Clone the repository
+git clone https://github.com/schabot/claude-deep-research-skill.git
 ```
 
 No additional dependencies required for basic usage.
@@ -59,11 +59,11 @@ deep research in ultradeep mode: compare PostgreSQL vs Supabase for our stack
 
 ## Pipeline
 
-Scope &rarr; Plan &rarr; **Retrieve** (parallel search + agents) &rarr; Triangulate &rarr; Outline Refinement &rarr; Synthesize &rarr; Critique (with loop-back) &rarr; Refine &rarr; Package
+Scope &rarr; Plan &rarr; **Retrieve** (parallel search + workstreams) &rarr; Triangulate &rarr; Outline Refinement &rarr; Synthesize &rarr; Critique (with loop-back) &rarr; Refine &rarr; Package
 
 Key features:
 - **Step 0**: Retrieves current date before searches (prevents stale training-data year assumptions)
-- **Parallel retrieval**: 5-10 concurrent searches + 2-3 focused sub-agents returning structured evidence objects
+- **Parallel retrieval**: 5-10 concurrent searches + 2-3 focused delegated workstreams returning structured evidence objects when the runtime supports it
 - **First Finish Search**: Adaptive quality thresholds by mode
 - **Critique loop-back**: Phase 6 can return to Phase 3 with delta-queries if critical gaps found
 - **Multi-persona red teaming**: Skeptical Practitioner, Adversarial Reviewer, Implementation Engineer (Deep/UltraDeep)
@@ -71,12 +71,12 @@ Key features:
 
 ## Output
 
-Reports saved to `~/Documents/[Topic]_Research_[Date]/`:
+Reports saved to `./[Topic]_Research_[Date]/` relative to the current working directory:
 - Markdown (primary source of truth)
-- HTML (McKinsey-style, auto-opened in browser)
+- HTML (McKinsey-style)
 - PDF (professional print via WeasyPrint)
 
-Reports >18K words auto-continue via recursive agent spawning with context preservation.
+Reports >18K words can continue in multiple passes with saved state and delegated workstreams when supported.
 
 ## Quality Standards
 
@@ -91,7 +91,7 @@ Reports >18K words auto-continue via recursive agent spawning with context prese
 
 | Tool | When | Setup |
 |------|------|-------|
-| WebSearch | Default, always available | None |
+| Native web search | Default, always available | None |
 | Exa MCP | Semantic/neural search | MCP config |
 | search-cli | Multi-provider aggregation | `brew install search-cli` + API keys |
 

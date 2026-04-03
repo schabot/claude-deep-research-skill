@@ -10,7 +10,7 @@ written to file immediately using Write/Edit tools.
 WHY: Manages output token limits while maintaining quality throughout
 RESULT: Large reports (up to 20,000 words per skill run) - sections sized naturally by content
 
-CLAUDE CODE LIMIT: 32,000 output tokens (≈20,000 words max per run)
+RUNTIME LIMITS: Respect the active environment's output and tool-call limits
 For reports >20,000 words: Run skill multiple times for different parts
 
 GENERATION WORKFLOW:

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Ecommerce: Enterprise Strategy Brief for Canadian Tire-Type Clients - Deep Research Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #17212b;
+            --muted: #5f6b76;
+            --line: #d8dde3;
+            --panel: #f6f8fa;
+            --accent: #003d5c;
+            --accent-dark: #002840;
+            --accent-soft: #edf5fa;
+            --accent-mid: #b8d4e6;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.65;
+            color: var(--ink);
+            background: #eef2f5;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 36px 48px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -80px;
+            width: 320px;
+            height: 320px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .header-tag {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.68);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 31px;
+            font-weight: 750;
+            line-height: 1.18;
+            margin-bottom: 12px;
+            max-width: 920px;
+            letter-spacing: -0.6px;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 15px;
+            line-height: 1.55;
+            max-width: 860px;
+            margin-bottom: 18px;
+        }
+
+        .header-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.76);
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .header-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-meta span::before {
+            content: "•";
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .header-meta span:first-child::before {
+            content: "";
+            display: none;
+        }
+
+        .metrics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            border-bottom: 2px solid var(--accent);
+            background: #0f1720;
+        }
+
+        .metric {
+            padding: 20px 22px;
+            border-right: 1px solid #223142;
+            text-align: center;
+        }
+
+        .metric:last-child {
+            border-right: none;
+        }
+
+        .metric-number {
+            display: block;
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.4px;
+        }
+
+        .metric-label {
+            display: block;
+            color: #b8c6d3;
+            font-size: 11px;
+            line-height: 1.45;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 0;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            background: white;
+            border-bottom: 1px solid var(--line);
+            padding: 0 36px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            padding: 14px 14px 12px;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--panel);
+            border-right: 1px solid var(--line);
+            padding: 28px 22px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            font-size: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            margin-top: 24px;
+        }
+
+        .sidebar h3:first-child {
+            margin-top: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin: 0 0 4px 0;
+            padding: 0;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #44515d;
+            display: block;
+            padding: 6px 10px;
+            border-left: 2px solid transparent;
+            border-radius: 0 3px 3px 0;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .sidebar a:hover {
+            color: var(--accent);
+            background: white;
+            border-left-color: var(--accent);
+        }
+
+        .sidebar .stat-box {
+            background: white;
+            border: 1px solid var(--line);
+            border-top: 3px solid var(--accent);
+            padding: 14px;
+            margin: 12px 0;
+        }
+
+        .sidebar .stat-box .big {
+            color: var(--accent);
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .sidebar .stat-box .lbl {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .content {
+            padding: 38px 48px 54px;
+        }
+
+        .section {
+            margin-bottom: 46px;
+            border-top: 1px solid var(--line);
+            padding-top: 28px;
+        }
+
+        .section:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .section-kicker {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: var(--accent);
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--ink);
+            margin: 0 0 18px 0;
+            line-height: 1.2;
+            letter-spacing: -0.4px;
+        }
+
+        .subsection-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 26px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .subsubsection-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 18px 0 10px;
+        }
+
+        .executive-summary {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf5fa 100%);
+            border-left: 4px solid var(--accent);
+            padding: 24px 26px;
+            margin-bottom: 38px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.78;
+        }
+
+        ul, ol {
+            margin: 16px 0 18px 26px;
+        }
+
+        li {
+            margin-bottom: 9px;
+            padding-left: 4px;
+            line-height: 1.66;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 22px 0;
+            font-size: 13px;
+            border: 1px solid var(--line);
+        }
+
+        th {
+            background: var(--accent);
+            color: white;
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-top: 1px solid var(--line);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+
+        tr:nth-child(even) td {
+            background: #fbfcfd;
+        }
+
+        code {
+            background: #f1f4f7;
+            border: 1px solid #e3e8ed;
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-size: 12px;
+        }
+
+        pre {
+            background: #0f1720;
+            color: #d9e2ea;
+            padding: 20px 22px;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        pre code {
+            background: transparent;
+            border: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .callout {
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+            padding: 16px 18px;
+            margin: 16px 0 20px;
+        }
+
+        .callout-label {
+            display: block;
+            color: var(--accent);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .citation {
+            color: var(--accent);
+            font-weight: 700;
+            background: var(--accent-soft);
+            padding: 1px 5px;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+
+        .bibliography {
+            margin-top: 42px;
+            background: var(--panel);
+            border-left: 4px solid var(--accent);
+            padding: 28px 30px;
+        }
+
+        .bibliography .section-title {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .bibliography-content {
+            padding-top: 8px;
+        }
+
+        .bib-entry {
+            margin-bottom: 14px;
+            padding-left: 44px;
+            text-indent: -44px;
+            line-height: 1.62;
+            font-size: 13px;
+        }
+
+        .bib-number {
+            color: var(--accent);
+            font-weight: 800;
+            margin-right: 6px;
+        }
+
+        .bib-entry a {
+            color: var(--accent);
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .bib-entry a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background: #101820;
+            color: #95a1ad;
+            font-size: 11px;
+            padding: 18px 32px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .content {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .metrics-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav {
+                padding: 0 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-tag">Deep Research Report</div>
+            <h1>Agentic Ecommerce: Enterprise Strategy Brief for Canadian Tire-Type Clients</h1>
+            <div class="header-subtitle">Agentic ecommerce is the shift from AI that recommends or answers questions to AI that can interpret goals, reason through multistep tasks, invoke enterprise systems, and in some cases execute commercial actions under authorization and policy controls [1][2]. The strategic implication is that commerce control is moving upstream into AI-mediated discovery, decisioning, and transaction orchestration, which changes where retailers, platforms, and payment providers capture value [1][2][3].</div>
+            <div class="header-meta">
+                <span>Undated</span>
+                <span>20 Sources</span>
+                <span>Deep Research Report</span>
+            </div>
+        </header>
+
+        <div class="metrics-dashboard"><div class="metric"><span class="metric-number">12 million</span><span class="metric-label">Canadian Tire’s public disclosures and partnership announcements make it a stron</span></div></div>
+
+        <nav class="nav">
+            <a href="#executive-summary">Executive Summary</a><a href="#introduction">Introduction</a><a href="#main-analysis">Main Analysis</a><a href="#synthesis-insights">Synthesis &amp; Insights</a><a href="#limitations-caveats">Limitations &amp; Caveats</a><a href="#recommendations">Recommendations</a><a href="#appendix-methodology">Appendix: Methodology</a>
+        </nav>
+
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>Contents</h3>
+                <ul><li><a href="#executive-summary">Executive Summary</a></li><li><a href="#introduction">Introduction</a></li><li><a href="#main-analysis">Main Analysis</a></li><li><a href="#synthesis-insights">Synthesis &amp; Insights</a></li><li><a href="#limitations-caveats">Limitations &amp; Caveats</a></li><li><a href="#recommendations">Recommendations</a></li><li><a href="#appendix-methodology">Appendix: Methodology</a></li></ul>
+                <h3>Report Stats</h3>
+                <div class="stat-box">
+                    <div class="big">20</div>
+                    <div class="lbl">Cited sources in bibliography</div>
+                </div>
+                <div class="stat-box">
+                    <div class="big">7</div>
+                    <div class="lbl">Top-level report sections</div>
+                </div>
+            </aside>
+
+            <main class="content">
+                <p># Agentic Ecommerce: Enterprise Strategy Brief for Canadian Tire-Type Clients</p>
+<section class="section executive-summary" id="executive-summary"><div class="section-kicker">Section</div><h2 class="section-title">Executive Summary</h2>
+<p>Agentic ecommerce is the shift from AI that recommends or answers questions to AI that can interpret goals, reason through multistep tasks, invoke enterprise systems, and in some cases execute commercial actions under authorization and policy controls <span class="citation">[1]</span><span class="citation">[2]</span>. The strategic implication is that commerce control is moving upstream into AI-mediated discovery, decisioning, and transaction orchestration, which changes where retailers, platforms, and payment providers capture value <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span>.</p>
+<p>The most innovative companies are concentrated at infrastructure control points. Shopify is strongest on merchant distribution and protocol participation through Agentic Storefronts and UCP <span class="citation">[3]</span><span class="citation">[4]</span>. Salesforce and Adobe are strongest on enterprise commerce experience and orchestration <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span>. Stripe, Visa, and Mastercard are strongest on agent-native checkout, trust, and payment execution <span class="citation">[9]</span><span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>.</p>
+<p>For enterprise clients like Canadian Tire, the best guidance is to prioritize bounded, high-value use cases rather than broad autonomous shopping. The strongest initial moves are guided discovery in complex categories, merchandising and promotion support, loyalty-linked service, associate enablement, and trust/protocol readiness <span class="citation">[14]</span><span class="citation">[15]</span><span class="citation">[16]</span><span class="citation">[17]</span>. Canadian Tire is a strong candidate because of its category breadth, omnichannel footprint, Triangle loyalty graph, ecosystem partnerships, and financial-services adjacency <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</p>
+<p><strong>Primary Recommendation:</strong> Treat agentic ecommerce as a commerce-control-plane shift and start with bounded, high-value use cases supported by stronger product data, API readiness, loyalty integration, and trust controls <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[5]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</p>
+<p><strong>Confidence Level:</strong> Medium-High. Market structure, infrastructure leadership, and enterprise architecture patterns are well supported by current primary sources; retailer-scale ROI and broad autonomous-shopping deployment evidence remain thinner <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[14]</span><span class="citation">[15]</span>.</p>
+</section>
+<section class="section" id="introduction"><div class="section-kicker">Section</div><h2 class="section-title">Introduction</h2>
+<h3 class="subsection-title">Research Question</h3>
+<p>What is agentic ecommerce, which companies are most innovative, what architecture supports it, and what guidance should be given to enterprise consulting clients such as Canadian Tire?</p>
+<h3 class="subsection-title">Scope &amp; Methodology</h3>
+<p>This report focuses on the state of agentic ecommerce through <strong>April 3, 2026</strong>, prioritizing 2025-2026 sources. It uses primary sources from commerce platforms, payments providers, retailer announcements, and consulting firms, with emphasis on current product launches, protocol announcements, and enterprise strategy perspectives <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[5]</span><span class="citation">[9]</span><span class="citation">[10]</span><span class="citation">[16]</span>.</p>
+<p>The research followed a staged deep-research workflow: scope, plan, retrieval, triangulation, draft, critique, and refinement. Retrieval prioritized category definition, commerce platforms, payments and trust, architecture patterns, enterprise use cases, and Canadian Tire client context. Where deployment evidence was thin, the report distinguishes fact from synthesis and notes uncertainty explicitly <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[14]</span><span class="citation">[15]</span>.</p>
+<h3 class="subsection-title">Key Assumptions</h3>
+<ul>
+<li>Public evidence on infrastructure and strategic direction is stronger than public evidence on retailer-wide ROI or production deployment depth <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</li>
+<li>The most important early leaders are likely platforms and payments firms rather than retailers alone <span class="citation">[3]</span><span class="citation">[5]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</li>
+<li>Canadian Tire is a useful enterprise anchor because of its loyalty scale, omnichannel complexity, partner ecosystem, and financial-services adjacency <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</li>
+</ul>
+</section>
+<section class="section" id="main-analysis"><div class="section-kicker">Section</div><h2 class="section-title">Main Analysis</h2>
+<h3 class="subsection-title">Finding 1: Agentic Ecommerce Is Structurally Different from Earlier AI Commerce</h3>
+<p>Agentic ecommerce is distinct from personalization, search relevance, and chatbot-assisted commerce because the defining capability is not only conversational interaction but delegated action across systems. McKinsey describes agentic commerce as shopping powered by AI agents acting on behalf of consumers, while Deloitte frames it as both a demand-channel shift and an operating-model shift <span class="citation">[1]</span><span class="citation">[2]</span>. Shopify, Visa, and Mastercard reinforce that the category depends on protocol participation, trusted execution, and commerce-system interoperability rather than simple conversational UX <span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span>.</p>
+<p>The most useful working definition is therefore operational: agentic ecommerce is commerce in which AI systems can interpret user intent, plan multistep actions, interact with merchant and payment systems, and execute or partially execute workflows under user authorization and enterprise guardrails <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[10]</span>. That operational definition is more useful for enterprise strategy than a marketing definition because it sets clear boundary lines. Static personalization is not enough. A chatbot that cannot act is not enough. Scripted automation without dynamic goal handling is not enough <span class="citation">[1]</span><span class="citation">[2]</span>.</p>
+<p>This distinction matters because it changes what enterprises must build. Earlier AI commerce mainly emphasized models, recommendations, and content generation. Agentic ecommerce requires orchestration, tool invocation, policy control, trust layers, and real-time access to enterprise systems such as catalog, pricing, inventory, loyalty, order management, and checkout <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span><span class="citation">[9]</span><span class="citation">[10]</span>. That makes it a systems and control problem, not just a model problem.</p>
+<div class="callout"><span class="callout-label">Key Evidence</span>
+<ul>
+<li>McKinsey positions agentic commerce around AI agents acting on behalf of consumers <span class="citation">[1]</span>.</li>
+<li>Deloitte frames agentic commerce as both a channel and operating-model shift <span class="citation">[2]</span>.</li>
+<li>Shopify’s UCP and Visa’s Trusted Agent Protocol show that standardized interaction and trust are central <span class="citation">[4]</span><span class="citation">[10]</span>.</li>
+</ul>
+</div>
+<div class="callout"><span class="callout-label">Implications</span>
+</div>
+<p>Retailers and consulting teams should avoid reducing this category to “better shopping assistants.” The real shift is that control is moving into AI-mediated decisioning and execution layers. That means enterprise strategy should focus on readiness for delegated actions and external agent participation rather than only surface-level experience design <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[10]</span>.</p>
+<p><strong>Sources:</strong> <span class="citation">[1]</span>, <span class="citation">[2]</span>, <span class="citation">[3]</span>, <span class="citation">[4]</span>, <span class="citation">[10]</span></p>
+<h3 class="subsection-title">Finding 2: The Most Innovative Companies Control the Infrastructure Layer</h3>
+<p>The strongest innovation is concentrated in firms that control merchant access, orchestration, checkout, and trusted execution. Shopify stands out because it is building the distribution layer that connects merchants to AI channels through Agentic Storefronts and the Universal Commerce Protocol <span class="citation">[3]</span><span class="citation">[4]</span>. That matters strategically because if AI conversations become a meaningful source of demand, the firms controlling merchant participation in those channels become structurally powerful <span class="citation">[2]</span><span class="citation">[3]</span>.</p>
+<p>Salesforce and Adobe are shaping the enterprise execution layer. Salesforce’s Agentforce Commerce is built around guided discovery, retail workflows, and commerce conversion <span class="citation">[5]</span>. Adobe’s Brand Concierge and Agent Orchestrator show a strong brand-owned and orchestration-heavy architecture for customer-facing commerce experiences <span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span>. These are not generic AI-assistant announcements; they are commerce-specific system moves.</p>
+<p>Payments firms are equally important. Visa’s Trusted Agent Protocol and Mastercard’s live agentic payment demonstrations suggest that trust, authentication, and delegated authorization may become decisive control points <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>. Stripe’s agentic commerce suite and programmable checkout orientation position it as the merchant-side transaction infrastructure layer <span class="citation">[9]</span>. Taken together, these firms matter more than isolated retailer pilots because they are defining the market’s rails and standards.</p>
+<div class="callout"><span class="callout-label">Key Evidence</span>
+<ul>
+<li>Shopify is explicitly standardizing agent-to-commerce interaction <span class="citation">[3]</span><span class="citation">[4]</span>.</li>
+<li>Salesforce and Adobe are productizing agentic commerce orchestration <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[7]</span>.</li>
+<li>Visa and Mastercard are making trust and execution core to the category <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>.</li>
+<li>Stripe is packaging merchant readiness for agentic channels <span class="citation">[9]</span>.</li>
+</ul>
+</div>
+<div class="callout"><span class="callout-label">Implications</span>
+</div>
+<p>When advising enterprise clients, the first strategic question should not be “Which retailer launched the best demo?” It should be “Which firms are controlling the interfaces, trust models, and execution layers that will mediate future demand?” The answer currently points to infrastructure players first <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</p>
+<p><strong>Sources:</strong> <span class="citation">[3]</span>, <span class="citation">[4]</span>, <span class="citation">[5]</span>, <span class="citation">[6]</span>, <span class="citation">[7]</span>, <span class="citation">[9]</span>, <span class="citation">[10]</span>, <span class="citation">[11]</span>, <span class="citation">[12]</span>, <span class="citation">[13]</span></p>
+<h3 class="subsection-title">Finding 3: The Emerging Architecture Is an Orchestration, Integration, and Trust Stack</h3>
+<p>The best current architecture pattern is layered. At the top sits the experience layer: web, app, chat, voice, or external AI channels such as ChatGPT or Google AI Mode <span class="citation">[3]</span><span class="citation">[5]</span>. Under that sits the orchestration layer, which coordinates planners, specialist agents, memory, and routing logic <span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span>. Under orchestration sit the enterprise tools and knowledge systems: product catalog, search, pricing, promotions, loyalty, CRM, order management, inventory, and checkout <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[8]</span><span class="citation">[9]</span>.</p>
+<p>The trust and control layer is what makes the architecture enterprise-safe. This layer includes customer identity, agent identity, delegated authorization, fraud controls, policy checks, audit logs, and verifiable intent <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>. Visa and Mastercard’s work is especially important because it demonstrates that agentic commerce requires new ways to validate both the origin and scope of an action. This is materially different from ordinary bot detection or standard wallet checkout <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[13]</span>.</p>
+<p>For enterprise retailers, the architecture takeaway is direct: the limiting factor is not simply LLM quality. It is whether the commerce stack is sufficiently structured, accessible, and governed for safe delegated execution. Retailers need better product attributes, better compatibility data, better real-time inventory, clearer loyalty logic, modern APIs, and strong observability before agentic experiences can be reliable at scale <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[8]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</p>
+<div class="callout"><span class="callout-label">Key Evidence</span>
+<ul>
+<li>Adobe explicitly positions orchestration as the decision layer behind customer-facing agents <span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span>.</li>
+<li>Salesforce, Shopify, and Stripe all imply strong dependence on structured merchant systems and APIs <span class="citation">[3]</span><span class="citation">[5]</span><span class="citation">[9]</span>.</li>
+<li>Visa and Mastercard show that trust and authorization are first-class architectural requirements <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>.</li>
+</ul>
+</div>
+<div class="callout"><span class="callout-label">Implications</span>
+</div>
+<p>This category should be framed for enterprise clients as an orchestration plus trust modernization agenda. Retailers that lack clean data and accessible APIs will struggle even if they adopt frontier models. Retailers that do have those foundations can compete effectively without necessarily building the most advanced autonomous agent on day one <span class="citation">[5]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</p>
+<p><strong>Sources:</strong> <span class="citation">[3]</span>, <span class="citation">[5]</span>, <span class="citation">[6]</span>, <span class="citation">[7]</span>, <span class="citation">[8]</span>, <span class="citation">[9]</span>, <span class="citation">[10]</span>, <span class="citation">[11]</span>, <span class="citation">[12]</span>, <span class="citation">[13]</span></p>
+<h3 class="subsection-title">Finding 4: The Best Enterprise Use Cases Are Bounded and Operationally Grounded</h3>
+<p>The evidence supports a clear maturity hierarchy. Guided selling and guided discovery are among the strongest current customer-facing use cases because they are easy to understand, high value, and tightly grounded in catalog and compatibility data <span class="citation">[5]</span><span class="citation">[14]</span>. Lowe’s Mylow is especially useful as a reference because home improvement is a complex decision domain similar in structure to several Canadian Tire categories <span class="citation">[14]</span>.</p>
+<p>Internal-facing use cases appear even more mature. McKinsey’s merchandising work argues that agentic AI can materially change merchant productivity and decision quality, and Lowe’s associate assistant shows how bounded agency can improve in-store execution and staff effectiveness <span class="citation">[15]</span><span class="citation">[20]</span>. These use cases are powerful because they combine clearer economics with lower trust risk than broad autonomous purchasing.</p>
+<p>In contrast, fully autonomous consumer purchasing across broad retail remains strategically important but still relatively early in public evidence. Payments and protocol work are progressing quickly, but the public case for scaled autonomous shopping remains thinner than the public case for guided discovery, merchandising support, associate enablement, and trusted delegated checkout <span class="citation">[9]</span><span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>. That asymmetry should shape enterprise recommendation logic.</p>
+<div class="callout"><span class="callout-label">Key Evidence</span>
+<ul>
+<li>Guided discovery is explicitly productized by Salesforce and illustrated by Lowe’s Mylow <span class="citation">[5]</span><span class="citation">[14]</span>.</li>
+<li>Internal merchandising and operational agents are supported by McKinsey and Lowe’s associate deployment <span class="citation">[15]</span><span class="citation">[20]</span>.</li>
+<li>Payment infrastructure is advancing faster publicly than mass autonomous shopping behavior <span class="citation">[9]</span><span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>.</li>
+</ul>
+</div>
+<div class="callout"><span class="callout-label">Implications</span>
+</div>
+<p>The right enterprise starting point is bounded, measurable, and low-regret. Consulting guidance should prioritize discovery, merchandising, loyalty service, associate enablement, and trust readiness before recommending broad consumer-side autonomy <span class="citation">[2]</span><span class="citation">[14]</span><span class="citation">[15]</span><span class="citation">[20]</span>.</p>
+<p><strong>Sources:</strong> <span class="citation">[5]</span>, <span class="citation">[9]</span>, <span class="citation">[10]</span>, <span class="citation">[11]</span>, <span class="citation">[12]</span>, <span class="citation">[13]</span>, <span class="citation">[14]</span>, <span class="citation">[15]</span>, <span class="citation">[20]</span></p>
+<h3 class="subsection-title">Finding 5: Canadian Tire Is Structurally Well Positioned for an Agentic Commerce Strategy</h3>
+<p>Canadian Tire’s public disclosures and partnership announcements make it a strong candidate for agentic-commerce strategy work. Triangle had nearly 12 million members in 2025 and more than 12 million in 2026 partnership communications, with expanding links across RBC, Tim Hortons, WestJet, and other partners <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>. That suggests a large and growing first-party identity and rewards graph, which is a major asset for agentic personalization, loyalty-aware service, and partner-linked commerce journeys.</p>
+<p>Canadian Tire is also category-diverse and omnichannel in ways that favor guided decision-making. Automotive, home improvement, seasonal goods, sporting goods, and apparel all benefit from structured discovery, compatibility logic, project-based assistance, and cross-channel fulfillment awareness <span class="citation">[16]</span><span class="citation">[18]</span>. Those conditions make bounded agentic use cases especially attractive.</p>
+<p>The implication is that Canadian Tire should not approach this space as a generic chatbot or brand-assistant problem. Its differentiation is more likely to come from combining category expertise, loyalty scale, omnichannel execution, and trust-rich customer context. That creates a stronger foundation for agentic guidance and post-purchase orchestration than many narrower retailers possess <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</p>
+<div class="callout"><span class="callout-label">Key Evidence</span>
+<ul>
+<li>Triangle’s scale and ecosystem expansion are clearly documented in public announcements <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</li>
+<li>The partner network reinforces Canadian Tire’s customer-graph advantage <span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</li>
+<li>The category profile supports guidance-heavy retail missions <span class="citation">[16]</span><span class="citation">[18]</span>.</li>
+</ul>
+</div>
+<div class="callout"><span class="callout-label">Implications</span>
+</div>
+<p>For a consulting client like Canadian Tire, the highest-value agenda is likely to be: complex-category guided selling, loyalty-linked service and post-purchase assistance, merchandising/promotion support, associate enablement, and checkout/protocol readiness. A broad autonomous-shopping flagship would be a weaker first bet <span class="citation">[14]</span><span class="citation">[15]</span><span class="citation">[16]</span><span class="citation">[17]</span>.</p>
+<p><strong>Sources:</strong> <span class="citation">[14]</span>, <span class="citation">[15]</span>, <span class="citation">[16]</span>, <span class="citation">[17]</span>, <span class="citation">[18]</span>, <span class="citation">[19]</span></p>
+</section>
+<section class="section" id="synthesis-insights"><div class="section-kicker">Section</div><h2 class="section-title">Synthesis &amp; Insights</h2>
+<h3 class="subsection-title">Patterns Identified</h3>
+<p>The strongest pattern across sources is that agentic ecommerce is being shaped from below by infrastructure rather than from above by retailer branding alone. Commerce platforms are competing to be the operating system for merchant participation in AI channels <span class="citation">[3]</span><span class="citation">[5]</span>. Payments networks are competing to own trust, identity, and delegated transaction logic <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>. Enterprise software vendors are turning orchestration and workflow integration into customer-facing capabilities <span class="citation">[6]</span><span class="citation">[7]</span><span class="citation">[8]</span>.</p>
+<p>The second pattern is that bounded, enterprise-safe use cases are maturing faster than broad consumer-side autonomy. Guided discovery, merchandising agents, and associate tools are better supported in public evidence than fully autonomous end-to-end shopping <span class="citation">[14]</span><span class="citation">[15]</span><span class="citation">[20]</span>. This suggests a phased market development pattern: discover, advise, route, and optimize first; transact autonomously at scale later.</p>
+<h3 class="subsection-title">Novel Insights</h3>
+<p>The most important strategic insight is that agentic ecommerce should be understood as a <strong>commerce control-plane shift</strong>. The core question is no longer only which retailer has the best owned digital experience. It is increasingly which firms control how demand is interpreted, routed, trusted, and converted. That is why protocols, identity, and orchestration are so prominent in the current evidence base <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[10]</span>.</p>
+<p>A second insight is that retailers with strong first-party graphs and complex decision categories may benefit more from agentic commerce than simpler retailers. Canadian Tire’s loyalty ecosystem, partner links, and category structure make it well suited for differentiated, bounded use cases that generic AI channels alone cannot replicate <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>. In that sense, agentic commerce may amplify the value of well-governed first-party data and strong omnichannel execution rather than merely commoditizing them.</p>
+<h3 class="subsection-title">Implications</h3>
+<p>For enterprise consulting clients, the practical implication is that the right near-term move is not to “launch an agent” but to modernize the systems, controls, and use cases that make bounded agency valuable and safe. That includes product-data quality, API readiness, trust and policy controls, loyalty integration, and workflow instrumentation <span class="citation">[5]</span><span class="citation">[9]</span><span class="citation">[10]</span>. Retailers that do this well should be able to participate in external AI channels while also improving owned-channel performance.</p>
+</section>
+<section class="section" id="limitations-caveats"><div class="section-kicker">Section</div><h2 class="section-title">Limitations &amp; Caveats</h2>
+<h3 class="subsection-title">Counterevidence Register</h3>
+<p>Public evidence on infrastructure, strategy, and payment trust is stronger than public evidence on retailer-wide production deployment. This report therefore has a bias toward market structure and enabling capabilities rather than a large body of retailer operating results <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[9]</span><span class="citation">[10]</span>. That does not undermine the strategic thesis, but it does limit how strongly one should claim current enterprise-scale adoption depth.</p>
+<h3 class="subsection-title">Known Gaps</h3>
+<ul>
+<li>Public ROI evidence remains thinner than product-launch evidence <span class="citation">[1]</span><span class="citation">[2]</span>.</li>
+<li>Retailer deployment examples are fewer and less detailed than platform and payments examples <span class="citation">[14]</span><span class="citation">[20]</span>.</li>
+<li>Protocol competition is still forming, so long-term winner forecasts would be premature <span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</li>
+</ul>
+<h3 class="subsection-title">Assumptions</h3>
+<ul>
+<li>The report assumes public launches and protocol moves are meaningful leading indicators of enterprise direction, even where broad deployment numbers are not yet available <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[9]</span><span class="citation">[10]</span>.</li>
+<li>The report assumes Canadian Tire’s public loyalty and ecosystem signals are sufficient to infer strategic suitability, even without deeper public disclosure on its internal architecture <span class="citation">[16]</span><span class="citation">[17]</span><span class="citation">[18]</span><span class="citation">[19]</span>.</li>
+</ul>
+</section>
+<section class="section" id="recommendations"><div class="section-kicker">Section</div><h2 class="section-title">Recommendations</h2>
+<h3 class="subsection-title">Immediate Actions</h3>
+<ol>
+<li>Treat agentic ecommerce as an enterprise strategy topic, not just a front-end AI topic <span class="citation">[1]</span><span class="citation">[2]</span>.</li>
+<li>Prioritize bounded, high-value use cases such as guided discovery, merchandising support, and associate enablement <span class="citation">[14]</span><span class="citation">[15]</span><span class="citation">[20]</span>.</li>
+<li>Improve product data, compatibility logic, and API accessibility to support reliable agent grounding and action <span class="citation">[5]</span><span class="citation">[6]</span><span class="citation">[8]</span><span class="citation">[9]</span>.</li>
+<li>Include payments, fraud, privacy, and policy stakeholders early because trust and delegated authorization are core to execution <span class="citation">[10]</span><span class="citation">[11]</span><span class="citation">[12]</span><span class="citation">[13]</span>.</li>
+</ol>
+<h3 class="subsection-title">Next Steps</h3>
+<ol>
+<li>Build a formal use-case prioritization matrix for Canadian Tire-like retailers.</li>
+<li>Assess protocol readiness for external AI channels and agent-native checkout.</li>
+<li>Map enterprise architecture gaps across loyalty, CRM, OMS, catalog, pricing, and checkout.</li>
+<li>Pilot one customer-facing and one internal-facing bounded use case before considering broader autonomy.</li>
+</ol>
+<h3 class="subsection-title">Further Research</h3>
+<ol>
+<li>Gather denser retailer deployment evidence.</li>
+<li>Build a capability maturity model for enterprise readiness.</li>
+<li>Compare consulting-firm methodologies more systematically.</li>
+<li>Quantify KPI frameworks for AI-channel share, guided-discovery conversion, and loyalty capture.</li>
+</ol>
+</section>
+<section class="section" id="appendix-methodology"><div class="section-kicker">Section</div><h2 class="section-title">Appendix: Methodology</h2>
+<h3 class="subsection-title">Research Process</h3>
+<p>This report was produced through a staged deep-research workflow: scope, plan, retrieval, triangulation, draft, critique, and refinement. Source retrieval emphasized 2025-2026 primary materials from commerce platforms, payments providers, retailers, and consultancies.</p>
+<h3 class="subsection-title">Sources Consulted</h3>
+<p>The core source base consisted of 20 cited sources spanning category definition, commerce platforms, payments/trust infrastructure, enterprise use cases, and Canadian Tire client context.</p>
+<h3 class="subsection-title">Verification Approach</h3>
+<p>Claims were triangulated where possible across multiple source classes. Strongest weight was given to primary product announcements, developer documentation, corporate communications, and major consulting reports. Areas where evidence remained thin are explicitly noted in the limitations section.</p>
+</section>
+
+                <section class="bibliography" id="bibliography">
+                    <div class="section-kicker">References</div>
+                    <div class="section-title">Bibliography</div>
+                    <div class="bibliography-content">
+<div class="bib-entry"><span class="bib-number">[1]</span> McKinsey &amp; Company (2025). "The agentic commerce opportunity: How AI agents are ushering in a new era for consumers and merchants". <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants" target="_blank">https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants</a></div>
+<div class="bib-entry"><span class="bib-number">[2]</span> Deloitte (2026). "Agentic commerce: Redefining retail economics". <a href="https://www.deloitte.com/content/dam/assets-zone3/us/en/docs/industries/consumer/2026/agentic-commerce-redefining-retail-economics.pdf" target="_blank">https://www.deloitte.com/content/dam/assets-zone3/us/en/docs/industries/consumer/2026/agentic-commerce-redefining-retail-economics.pdf</a></div>
+<div class="bib-entry"><span class="bib-number">[3]</span> Shopify (2026). "The agentic commerce platform: Shopify connects any merchant to every AI conversation". <a href="https://www.shopify.com/news/ai-commerce-at-scale" target="_blank">https://www.shopify.com/news/ai-commerce-at-scale</a></div>
+<div class="bib-entry"><span class="bib-number">[4]</span> Shopify (2026). "Universal Commerce Protocol". <a href="https://www.shopify.com/ucp" target="_blank">https://www.shopify.com/ucp</a></div>
+<div class="bib-entry"><span class="bib-number">[5]</span> Salesforce (2026). "Commerce Innovations". <a href="https://www.salesforce.com/commerce/innovations/" target="_blank">https://www.salesforce.com/commerce/innovations/</a></div>
+<div class="bib-entry"><span class="bib-number">[6]</span> Adobe (2026). "Adobe Brand Concierge". <a href="https://business.adobe.com/products/brand-concierge" target="_blank">https://business.adobe.com/products/brand-concierge</a></div>
+<div class="bib-entry"><span class="bib-number">[7]</span> Adobe (2026). "How Adobe Brand Concierge works". <a href="https://business.adobe.com/blog/how-adobe-brand-concierge-works" target="_blank">https://business.adobe.com/blog/how-adobe-brand-concierge-works</a></div>
+<div class="bib-entry"><span class="bib-number">[8]</span> Adobe (2026). "Agent Orchestrator". <a href="https://business.adobe.com/de/products/experience-platform/agent-orchestrator.html" target="_blank">https://business.adobe.com/de/products/experience-platform/agent-orchestrator.html</a></div>
+<div class="bib-entry"><span class="bib-number">[9]</span> Stripe (2025). "Agentic Commerce Suite". <a href="https://stripe.com/mx/newsroom/news/agentic-commerce-suite" target="_blank">https://stripe.com/mx/newsroom/news/agentic-commerce-suite</a></div>
+<div class="bib-entry"><span class="bib-number">[10]</span> Visa (2025). "Visa unveils Trusted Agent Protocol for AI commerce". <a href="https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html" target="_blank">https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html</a></div>
+<div class="bib-entry"><span class="bib-number">[11]</span> Visa Developer (2026). "Trusted Agent Protocol overview". <a href="https://developer.visa.com/capabilities/trusted-agent-protocol/overview" target="_blank">https://developer.visa.com/capabilities/trusted-agent-protocol/overview</a></div>
+<div class="bib-entry"><span class="bib-number">[12]</span> Mastercard (2026). "Santander and Mastercard complete Europe’s first live end-to-end payment executed by an AI agent". <a href="https://www.mastercard.com/news/europe/en/newsroom/press-releases/en/2026/santander-and-mastercard-complete-europe-s-first-live-end-to-end-payment-executed-by-an-ai-agent" target="_blank">https://www.mastercard.com/news/europe/en/newsroom/press-releases/en/2026/santander-and-mastercard-complete-europe-s-first-live-end-to-end-payment-executed-by-an-ai-agent</a></div>
+<div class="bib-entry"><span class="bib-number">[13]</span> Mastercard (2026). "When AI starts buying for you, trust becomes the product". <a href="https://www.mastercard.com/mt/en/news-and-trends/stories/2026/verifiable-intent.html" target="_blank">https://www.mastercard.com/mt/en/news-and-trends/stories/2026/verifiable-intent.html</a></div>
+<div class="bib-entry"><span class="bib-number">[14]</span> Lowe’s (2025). "Lowe’s launches first AI-powered home improvement virtual advisor". <a href="https://corporate.lowes.com/newsroom/press-releases/lowes-launches-first-ai-powered-home-improvement-virtual-advisor-03-05-25" target="_blank">https://corporate.lowes.com/newsroom/press-releases/lowes-launches-first-ai-powered-home-improvement-virtual-advisor-03-05-25</a></div>
+<div class="bib-entry"><span class="bib-number">[15]</span> McKinsey &amp; Company (2026). "Merchants unleashed: How agentic AI transforms retail merchandising". <a href="https://www.mckinsey.com/industries/retail/our-insights/merchants-unleashed-how-agentic-ai-transforms-retail-merchandising" target="_blank">https://www.mckinsey.com/industries/retail/our-insights/merchants-unleashed-how-agentic-ai-transforms-retail-merchandising</a></div>
+<div class="bib-entry"><span class="bib-number">[16]</span> Canadian Tire Corporation (2025). "RBC and Canadian Tire Corporation announce strategic loyalty partnership". <a href="https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2025/RBC-and-Canadian-Tire-Corporation-announce-strategic-loyalty-partnership-expanding-rewards-and-enhancing-value-for-millions-of-Canadians/default.aspx" target="_blank">https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2025/RBC-and-Canadian-Tire-Corporation-announce-strategic-loyalty-partnership-expanding-rewards-and-enhancing-value-for-millions-of-Canadians/default.aspx</a></div>
+<div class="bib-entry"><span class="bib-number">[17]</span> Canadian Tire Corporation (2026). "RBC and Canadian Tire Corporation launch loyalty partnership". <a href="https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2026/RBC-and-Canadian-Tire-Corporation-launch-loyalty-partnership-unlocking-more-rewards-and-value-for-millions-of-Canadians/default.aspx" target="_blank">https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2026/RBC-and-Canadian-Tire-Corporation-launch-loyalty-partnership-unlocking-more-rewards-and-value-for-millions-of-Canadians/default.aspx</a></div>
+<div class="bib-entry"><span class="bib-number">[18]</span> Canadian Tire Corporation (2025). "Canadian Tire Corporation and Tim Hortons team up in strategic loyalty partnership". <a href="https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2025/Canadian-Tire-Corporation-and-Tim-Hortons---Two-of-Canadas-Most-Beloved-Brands---Team-Up-in-Strategic-Loyalty-Partnership/default.aspx" target="_blank">https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2025/Canadian-Tire-Corporation-and-Tim-Hortons---Two-of-Canadas-Most-Beloved-Brands---Team-Up-in-Strategic-Loyalty-Partnership/default.aspx</a></div>
+<div class="bib-entry"><span class="bib-number">[19]</span> Canadian Tire Corporation (2026). "Canadians can now spend once and earn twice with innovative Canadian Tire Corporation and WestJet loyalty partnership". <a href="https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2026/Canadians-can-now-spend-once-and-earn-twice-with-innovative-Canadian-Tire-Corporation-and-WestJet-loyalty-partnership/default.aspx" target="_blank">https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2026/Canadians-can-now-spend-once-and-earn-twice-with-innovative-Canadian-Tire-Corporation-and-WestJet-loyalty-partnership/default.aspx</a></div>
+<div class="bib-entry"><span class="bib-number">[20]</span> Lowe’s (2025). "Lowe’s deploys first at-scale AI assistant for retail associates". <a href="https://corporate.lowes.com/newsroom/press-releases/lowes-deploys-first-scale-ai-assistant-retail-associates-05-05-25" target="_blank">https://corporate.lowes.com/newsroom/press-releases/lowes-deploys-first-scale-ai-assistant-retail-associates-05-05-25</a></div>
+</div>
+                </section>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <span>Generated via deep-research packaging pipeline</span>
+            <span>Undated</span>
+        </footer>
+    </div>
+</body>
+</html>

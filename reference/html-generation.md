@@ -24,7 +24,6 @@ Extract 3-4 key quantitative findings for dashboard display at top.
 
 Use Python script:
 ```bash
-cd ~/.claude/skills/deep-research
 python scripts/md_to_html.py [markdown_report_path]
 ```
 
@@ -74,10 +73,10 @@ NOTE: This step is optional for speed. Basic [N] citations are sufficient.
 ```bash
 python scripts/verify_html.py --html [html_path] --md [md_path]
 ```
-- Pass: Proceed to open
+- Pass: Proceed to review or open
 - Fail: Fix errors and re-run
 
-### Step 7: Open in Browser
+### Step 7: Review in Browser (Optional)
 ```bash
 open [html_path]
 ```
@@ -98,6 +97,6 @@ open [html_path]
 3. Generate: `weasyprint [html_path] [pdf_path]`
 4. Open: `open [pdf_path]`
 
-**Option B: generating-pdf Skill**
+**Option B: delegated PDF generation**
 
-Use Task tool with general-purpose agent, invoke generating-pdf skill.
+Use the environment's delegation mechanism only if direct PDF generation is unavailable.

@@ -210,18 +210,18 @@ Use Graph-of-Thoughts: branch into 3-4 potential research paths, evaluate, then 
 Your task: Systematically collect information from multiple sources
 
 ## Execute:
-1. Use WebSearch with iterative query refinement (minimum 10 searches)
-2. Use WebFetch to deep-dive into 5-10 most promising sources
+1. Use the runtime's native web-search capability with iterative query refinement (minimum 10 searches)
+2. Use the runtime's page-open/fetch capability to deep-dive into 5-10 most promising sources
 3. Extract key passages with metadata
 4. Track information gaps
 5. Follow 2-3 promising tangents
 6. Ensure source diversity (different domains, perspectives)
 
 ## Tools to Use:
-- WebSearch: For current information and broad coverage
-- WebFetch: For detailed extraction from specific URLs
+- Native web search: For current information and broad coverage
+- Native page-open/fetch: For detailed extraction from specific URLs
 - Grep/Read: For local documentation if relevant
-- Task: Spawn 2-3 parallel retrieval agents for efficiency
+- Delegation/parallelism support: Spawn 2-3 parallel retrieval workstreams when available
 
 ## Output:
 Store all sources with metadata. Each source should include:
