@@ -186,3 +186,30 @@ Converted forensic diagnosis into an execution-ready implementation plan (`CODEX
 1. Confirm final per-mode minimum thresholds (especially deep vs ultradeep lower bounds).
 2. Confirm whether HTML parity failures should always block packaging or be overridable in CI-only contexts.
 3. Confirm whether continuation execution remains integrated in `research_engine.py` or delegated by default to a dedicated runner script.
+
+## 2026-04-03 - Converted implementation plan into executable package checklist
+
+### Summary
+Reworked `CODEX_PORT_IMPLEMENTATION_PLAN.md` from narrative architecture text into a check-off to-do tracker composed of discrete implementation packages with deliverables and acceptance checks.
+
+### Decisions/tradeoffs recorded
+- Preserved the original implementation intent, but changed format to execution-tracking first.
+- Kept package boundaries aligned to the previously prioritized roadmap (contracts → engine → continuation → gates → HTML parity → tests → docs → E2E smoke).
+- Added explicit acceptance criteria per package so completion can be verified without subjective interpretation.
+
+### Open items requiring human decision
+1. Confirm whether package completion should be tracked in-place on the checklist file or mirrored into a project board.
+2. Confirm whether deferred items should be promoted into MVP scope for this repo iteration.
+
+## 2026-04-03 - Restored implementation plan and split checklist into separate file
+
+### Summary
+Addressed review feedback by restoring `CODEX_PORT_IMPLEMENTATION_PLAN.md` to its original narrative/reference form and moving the actionable checkbox tracker into a separate file: `CODEX_PORT_TODO.md`.
+
+### Decisions/tradeoffs recorded
+- Kept the long-form implementation plan intact to preserve architecture rationale and sequencing context.
+- Retained the checklist format as an execution aid, but decoupled it from the reference plan to reduce document churn and preserve auditability.
+
+### Open items requiring human decision
+1. Confirm canonical filename preference for the execution checklist (`CODEX_PORT_TODO.md` vs `IMPLEMENTATION_TODO.md`).
+2. Confirm whether completion tracking should occur only in-repo or be mirrored in external project tooling.
