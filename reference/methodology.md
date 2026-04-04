@@ -73,11 +73,10 @@ Use the returned year for all date-filtered queries and recency checks. Do NOT a
 
 Choose ONE search approach per research session:
 
-**Option A: Use WebSearch (built-in, no MCP required)**
+**Option A: Use the environment's built-in web-search capability**
 - Standard web search with simple query string
-- Parameters: `query` (required)
-- Optional: `allowed_domains`, `blocked_domains`
-- Example: `WebSearch(query="quantum computing 2025")`
+- Use the native search tool available in the current runtime
+- Example: `search_query("quantum computing 2025")` or the equivalent built-in web search call
 
 **Option B: Use Exa MCP (if available, more powerful)**
 - Advanced semantic + keyword search
@@ -98,13 +97,15 @@ Choose ONE search approach per research session:
 
 **NEVER mix parameter styles** - this causes "Invalid tool parameters" errors.
 
-**Step 2: Spawn parallel deep-dive agents**
+**Step 2: Launch parallel deep-dive workstreams when supported**
 
-Use Task tool with general-purpose agents (3-5 agents) for:
+Use the runtime's delegation or parallel-execution capability, when available, for 3-5 independent workstreams:
 - Academic paper analysis (PDFs, detailed extraction)
 - Documentation deep dives (technical specs, API docs)
 - Repository analysis (code examples, implementations)
 - Specialized domain research (requires multi-step investigation)
+
+If delegation is not available, emulate the same structure locally by handling each workstream as a separate retrieval batch with explicit notes and source grouping.
 
 **Sub-agent output format:** Require all sub-agents to return structured evidence, not free text:
 ```json
@@ -112,17 +113,17 @@ Use Task tool with general-purpose agents (3-5 agents) for:
 ```
 This prevents synthesis fatigue when merging results from 3-5 agents.
 
-**Example parallel execution (using WebSearch):**
+**Example parallel execution (using native web search):**
 ```
 [Single message with multiple tool calls]
-- WebSearch(query="quantum computing 2025 state of the art")
-- WebSearch(query="quantum computing limitations challenges")
-- WebSearch(query="quantum computing commercial applications [CURRENT_YEAR]")
-- WebSearch(query="quantum computing vs classical comparison")
-- WebSearch(query="quantum error correction research", allowed_domains=["arxiv.org", "scholar.google.com"])
-- Task(subagent_type="general-purpose", description="Analyze quantum computing papers", prompt="Deep dive into quantum computing academic papers from [CURRENT_YEAR], extract key findings and methodologies")
-- Task(subagent_type="general-purpose", description="Industry analysis", prompt="Analyze quantum computing industry reports and market data, identify commercial applications")
-- Task(subagent_type="general-purpose", description="Technical challenges", prompt="Extract technical limitations and challenges from quantum computing research")
+- search_query("quantum computing 2025 state of the art")
+- search_query("quantum computing limitations challenges")
+- search_query("quantum computing commercial applications [CURRENT_YEAR]")
+- search_query("quantum computing vs classical comparison")
+- search_query("quantum error correction research", domains=["arxiv.org", "scholar.google.com"])
+- delegated workstream: "Analyze quantum computing academic papers from [CURRENT_YEAR], extract key findings and methodologies"
+- delegated workstream: "Analyze quantum computing industry reports and market data, identify commercial applications"
+- delegated workstream: "Extract technical limitations and challenges from quantum computing research"
 ```
 
 **Example parallel execution (using Exa MCP - if available):**
@@ -132,7 +133,7 @@ This prevents synthesis fatigue when merging results from 3-5 agents.
 - mcp__Exa__exa_search(query="quantum computing limitations", type="keyword", num_results=10)
 - mcp__Exa__exa_search(query="quantum computing commercial", type="auto", num_results=10, start_published_date="[use current year from Step 0]")
 - mcp__Exa__exa_search(query="quantum error correction", type="neural", num_results=10, include_domains=["arxiv.org"])
-- Task(subagent_type="general-purpose", description="Academic analysis", prompt="Analyze quantum computing academic papers")
+- delegated workstream: "Analyze quantum computing academic papers"
 ```
 
 **Step 3: Collect and organize results**
@@ -173,13 +174,13 @@ As results arrive:
 - Prioritize high-credibility sources (>80) for core claims
 
 **Techniques:**
-- Use WebSearch for current information (primary tool)
+- Use the native web-search tool for current information (primary tool)
 - Use search-cli for multi-provider aggregated search (if installed)
-- Use WebFetch for deep dives into specific sources (secondary)
-- Use Exa search (via WebSearch with type="neural") for semantic exploration
+- Use the native page-open/fetch capability for deep dives into specific sources (secondary)
+- Use Exa search (if available) for semantic exploration
 - Use Grep/Read for local documentation
 - Execute code for computational analysis (when needed)
-- Use Task tool to spawn parallel retrieval agents (3-5 agents)
+- Use the runtime's delegation/parallelism support for retrieval workstreams when available
 
 **Output:** Organized information repository with source tracking, credibility scores, and coverage map
 
@@ -390,9 +391,9 @@ Rather than linear thinking, branch into multiple reasoning paths:
 - Merge insights from different branches
 - Backtrack and revise as new information emerges
 
-### Parallel Agent Deployment
+### Parallel Workstream Deployment
 
-Use Task tool to spawn sub-agents for:
+Use the runtime's delegation or parallel-execution support, when available, for:
 - Parallel source retrieval
 - Independent verification paths
 - Competing hypothesis evaluation

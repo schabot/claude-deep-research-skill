@@ -1,330 +1,508 @@
 #!/usr/bin/env python3
-"""
-Markdown to HTML converter for research reports
-Properly converts markdown sections to HTML while preserving structure and formatting
-"""
+"""Convert a research markdown report to styled HTML using the report template."""
 
+from __future__ import annotations
+
+import argparse
+import html
 import re
-from typing import Tuple
+from dataclasses import dataclass
 from pathlib import Path
+from typing import List, Tuple
 
 
-def convert_markdown_to_html(markdown_text: str) -> Tuple[str, str]:
-    """
-    Convert markdown to HTML in two parts: content and bibliography
-
-    Args:
-        markdown_text: Full markdown report text
-
-    Returns:
-        Tuple of (content_html, bibliography_html)
-    """
-    # Split content and bibliography
-    parts = markdown_text.split('## Bibliography')
-    content_md = parts[0]
-    bibliography_md = parts[1] if len(parts) > 1 else ""
-
-    # Convert content (everything except bibliography)
-    content_html = _convert_content_section(content_md)
-
-    # Convert bibliography separately
-    bibliography_html = _convert_bibliography_section(bibliography_md)
-
-    return content_html, bibliography_html
+@dataclass
+class SectionInfo:
+    title: str
+    anchor: str
 
 
-def _convert_content_section(markdown: str) -> str:
-    """Convert main content sections to HTML"""
-    html = markdown
+@dataclass
+class ParsedReport:
+    metadata: dict
+    body: str
 
-    # Remove title and front matter (first ## heading is handled separately)
-    lines = html.split('\n')
-    processed_lines = []
-    skip_until_first_section = True
+
+def parse_report(markdown_text: str) -> ParsedReport:
+    """Parse optional YAML-style frontmatter from the markdown report."""
+    if not markdown_text.startswith("---\n"):
+        return ParsedReport(metadata={}, body=markdown_text)
+
+    match = re.match(r"^---\n(.*?)\n---\n(.*)$", markdown_text, re.DOTALL)
+    if not match:
+        return ParsedReport(metadata={}, body=markdown_text)
+
+    metadata_block, body = match.groups()
+    metadata = {}
+    for line in metadata_block.splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        metadata[key.strip()] = value.strip().strip('"')
+    return ParsedReport(metadata=metadata, body=body)
+
+
+def slugify(value: str) -> str:
+    """Create stable anchor IDs from section titles."""
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "section"
+
+
+def extract_title(markdown_text: str, metadata: dict) -> str:
+    """Extract the title from metadata or the first H1."""
+    if metadata.get("title"):
+        return metadata["title"]
+
+    for line in markdown_text.splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return "Research Report"
+
+
+def extract_subtitle(markdown_text: str) -> str:
+    """Extract a subtitle from the first non-heading paragraph after H1."""
+    lines = markdown_text.splitlines()
+    found_h1 = False
+    buffer: List[str] = []
 
     for line in lines:
-        # Skip everything until we hit "## Executive Summary" or first major section
-        if skip_until_first_section:
-            if line.startswith('## ') and not line.startswith('### '):
-                skip_until_first_section = False
-                processed_lines.append(line)
+        stripped = line.strip()
+        if not found_h1:
+            if stripped.startswith("# "):
+                found_h1 = True
             continue
-        processed_lines.append(line)
 
-    html = '\n'.join(processed_lines)
+        if not stripped:
+            if buffer:
+                break
+            continue
 
-    # Convert headers
-    # ## Section Title → <div class="section"><h2 class="section-title">Section Title</h2></div>
-    html = re.sub(
-        r'^## (.+)$',
-        r'<div class="section"><h2 class="section-title">\1</h2>',
-        html,
-        flags=re.MULTILINE
+        if stripped.startswith("#"):
+            if buffer:
+                break
+            continue
+
+        if stripped == "---":
+            continue
+
+        buffer.append(stripped)
+        if len(" ".join(buffer)) > 220:
+            break
+
+    subtitle = " ".join(buffer).strip()
+    return subtitle or "Deep research report"
+
+
+def extract_date(metadata: dict) -> str:
+    """Extract report date from metadata when present."""
+    return metadata.get("date", "Undated")
+
+
+def extract_mode_label(metadata: dict) -> str:
+    """Extract mode label from metadata when present."""
+    mode = metadata.get("mode")
+    if mode:
+        return f"{mode} Research Mode"
+    return "Deep Research Report"
+
+
+def extract_header_tag(metadata: dict) -> str:
+    """Extract header tag from metadata when present."""
+    classification = metadata.get("classification")
+    if classification:
+        return classification
+    return "Deep Research Report"
+
+
+def split_bibliography(markdown_text: str) -> Tuple[str, str]:
+    """Split the markdown body into content and bibliography section body."""
+    match = re.search(r"^## Bibliography\s*$", markdown_text, re.MULTILINE)
+    if not match:
+        return markdown_text, ""
+
+    content = markdown_text[:match.start()].rstrip()
+    bibliography = markdown_text[match.end():].lstrip("\n")
+    return content, bibliography
+
+
+def extract_bibliography_and_tail(markdown_text: str) -> Tuple[str, str, str]:
+    """Split markdown into content, bibliography, and post-bibliography content."""
+    content, bibliography_plus_tail = split_bibliography(markdown_text)
+    if not bibliography_plus_tail:
+        return content, "", ""
+
+    next_section = re.search(r"^## (?!Bibliography\b)(.+)$", bibliography_plus_tail, re.MULTILINE)
+    if not next_section:
+        return content, bibliography_plus_tail.strip(), ""
+
+    bibliography = bibliography_plus_tail[:next_section.start()].strip()
+    tail = bibliography_plus_tail[next_section.start():].strip()
+    return content, bibliography, tail
+
+
+def extract_sections(markdown_text: str) -> List[SectionInfo]:
+    """Extract top-level H2 sections for nav/sidebar generation."""
+    sections = []
+    for title in re.findall(r"^## (.+)$", markdown_text, re.MULTILINE):
+        if title.strip().lower() == "bibliography":
+            continue
+        sections.append(SectionInfo(title=title.strip(), anchor=slugify(title)))
+    return sections
+
+
+def extract_metrics(markdown_text: str, max_metrics: int = 4) -> List[Tuple[str, str]]:
+    """Extract a small set of metrics from the markdown body."""
+    candidates = []
+    metric_pattern = re.compile(
+        r"(\$[\d–\-\.]+[TMBK]?|[\d]+(?:\.[\d]+)?%|[\d]+\s?(?:million|billion|trillion)|1 in \d+|[\d]+x)",
+        re.IGNORECASE,
     )
 
-    # ### Subsection → <h3 class="subsection-title">Subsection</h3>
-    html = re.sub(
-        r'^### (.+)$',
-        r'<h3 class="subsection-title">\1</h3>',
-        html,
-        flags=re.MULTILINE
-    )
+    for line in markdown_text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or stripped == "---":
+            continue
+        match = metric_pattern.search(stripped)
+        if not match:
+            continue
+        number = match.group(1)
+        label = stripped.replace(number, "").strip(" .:-")
+        if not label:
+            continue
+        candidates.append((number, label[:80]))
+        if len(candidates) >= max_metrics:
+            break
 
-    # #### Subsubsection → <h4 class="subsubsection-title">Title</h4>
-    html = re.sub(
-        r'^#### (.+)$',
-        r'<h4 class="subsubsection-title">\1</h4>',
-        html,
-        flags=re.MULTILINE
-    )
+    return candidates
 
-    # Convert **bold** text
-    html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
 
-    # Convert *italic* text
-    html = re.sub(r'\*(.+?)\*', r'<em>\1</em>', html)
+def render_metrics_dashboard(metrics: List[Tuple[str, str]]) -> str:
+    """Render the metrics dashboard."""
+    if not metrics:
+        return ""
 
-    # Convert inline code `code`
-    html = re.sub(r'`(.+?)`', r'<code>\1</code>', html)
-
-    # Convert unordered lists
-    html = _convert_lists(html)
-
-    # Convert tables
-    html = _convert_tables(html)
-
-    # Convert paragraphs (wrap non-HTML lines in <p> tags)
-    html = _convert_paragraphs(html)
-
-    # Close all open sections
-    html = _close_sections(html)
-
-    # Wrap executive summary if present
-    html = html.replace(
-        '<h2 class="section-title">Executive Summary</h2>',
-        '<div class="executive-summary"><h2 class="section-title">Executive Summary</h2>'
-    )
-    if '<div class="executive-summary">' in html:
-        # Close executive summary at the next section
-        html = html.replace(
-            '</h2>\n<div class="section">',
-            '</h2></div>\n<div class="section">',
-            1
+    blocks = []
+    for number, label in metrics:
+        blocks.append(
+            '<div class="metric">'
+            f'<span class="metric-number">{html.escape(number)}</span>'
+            f'<span class="metric-label">{html.escape(label)}</span>'
+            '</div>'
         )
+    return f'<div class="metrics-dashboard">{"".join(blocks)}</div>'
 
-    return html
+
+def render_nav_links(sections: List[SectionInfo]) -> str:
+    """Render top navigation links."""
+    return "".join(
+        f'<a href="#{section.anchor}">{html.escape(shorten_nav_label(section.title))}</a>'
+        for section in sections
+    )
 
 
-def _convert_bibliography_section(markdown: str) -> str:
-    """Convert bibliography section to HTML"""
+def shorten_nav_label(title: str) -> str:
+    """Shorten verbose section names for the top nav."""
+    cleaned = re.sub(r"^Section \d+:\s*", "", title).strip()
+    return cleaned if len(cleaned) <= 28 else cleaned[:25].rstrip() + "..."
+
+
+def render_sidebar_links(sections: List[SectionInfo]) -> str:
+    """Render the sidebar table of contents."""
+    items = "".join(
+        f'<li><a href="#{section.anchor}">{html.escape(section.title)}</a></li>'
+        for section in sections
+    )
+    return f"<ul>{items}</ul>"
+
+
+def replace_inline_formatting(text: str) -> str:
+    """Convert a limited markdown subset inside paragraphs."""
+    escaped = html.escape(text, quote=False)
+    escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"\*([^*]+)\*", r"<em>\1</em>", escaped)
+    escaped = re.sub(r"\[(\d+)\]", r'<span class="citation">[\1]</span>', escaped)
+    return escaped
+
+
+def convert_bibliography(markdown: str) -> str:
+    """Convert bibliography lines to HTML."""
     if not markdown.strip():
         return ""
 
-    html = markdown
+    entries = []
+    for line in markdown.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped == "---":
+            continue
 
-    # Convert each [N] citation to a proper bibliography entry
-    # Look for patterns like [1] Title - URL
-    html = re.sub(
-        r'\[(\d+)\]\s*(.+?)\s*-\s*(https?://[^\s\)]+)',
-        r'<div class="bib-entry"><span class="bib-number">[\1]</span> <a href="\3" target="_blank">\2</a></div>',
-        html
+        match = re.match(r"^\[(\d+)\]\s+(.+?)(https?://[^\s\)]+)\s*$", stripped)
+        if not match:
+            entries.append(f'<p>{replace_inline_formatting(stripped)}</p>')
+            continue
+
+        num, text, url = match.groups()
+        text = replace_inline_formatting(text.strip())
+        entries.append(
+            f'<div class="bib-entry"><span class="bib-number">[{num}]</span> '
+            f'{text} <a href="{html.escape(url)}" target="_blank">{html.escape(url)}</a></div>'
+        )
+    return f'<div class="bibliography-content">\n' + "\n".join(entries) + "\n</div>"
+
+
+def convert_content(markdown: str) -> str:
+    """Convert report content markdown to styled HTML."""
+    lines = markdown.splitlines()
+    result: List[str] = []
+    paragraph_lines: List[str] = []
+    list_stack: List[str] = []
+    section_open = False
+    callout_open = False
+
+    def flush_paragraph() -> None:
+        nonlocal paragraph_lines
+        if not paragraph_lines:
+            return
+        text = " ".join(part.strip() for part in paragraph_lines if part.strip())
+        if text:
+            result.append(f"<p>{replace_inline_formatting(text)}</p>")
+        paragraph_lines = []
+
+    def close_lists() -> None:
+        nonlocal list_stack
+        while list_stack:
+            result.append(f"</{list_stack.pop()}>")
+
+    def close_callout() -> None:
+        nonlocal callout_open
+        if callout_open:
+            flush_paragraph()
+            result.append("</div>")
+            callout_open = False
+
+    for raw_line in lines:
+        line = raw_line.rstrip("\n")
+        stripped = line.strip()
+
+        if not stripped:
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            continue
+
+        if stripped == "---":
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            continue
+
+        if stripped.startswith("```"):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            result.append("<pre><code>")
+            continue
+
+        if result and result[-1] == "<pre><code>":
+            if stripped.startswith("```"):
+                result.append("</code></pre>")
+            else:
+                result.append(html.escape(line))
+            continue
+
+        if stripped.startswith("## "):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            if section_open:
+                result.append("</section>")
+            title = stripped[3:].strip()
+            anchor = slugify(title)
+            result.append(
+                f'<section class="section" id="{anchor}">'
+                f'<div class="section-kicker">Section</div>'
+                f'<h2 class="section-title">{html.escape(title)}</h2>'
+            )
+            section_open = True
+            continue
+
+        if stripped.startswith("### "):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            result.append(f'<h3 class="subsection-title">{html.escape(stripped[4:].strip())}</h3>')
+            continue
+
+        if stripped.startswith("#### "):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            result.append(f'<h4 class="subsubsection-title">{html.escape(stripped[5:].strip())}</h4>')
+            continue
+
+        if stripped.startswith("- ") or stripped.startswith("* "):
+            flush_paragraph()
+            if not list_stack or list_stack[-1] != "ul":
+                close_lists()
+                list_stack.append("ul")
+                result.append("<ul>")
+            result.append(f"<li>{replace_inline_formatting(stripped[2:].strip())}</li>")
+            continue
+
+        if re.match(r"^\d+\.\s", stripped):
+            flush_paragraph()
+            if not list_stack or list_stack[-1] != "ol":
+                close_lists()
+                list_stack.append("ol")
+                result.append("<ol>")
+            content = re.sub(r"^\d+\.\s", "", stripped)
+            result.append(f"<li>{replace_inline_formatting(content.strip())}</li>")
+            continue
+
+        if stripped.startswith("|") and stripped.endswith("|"):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            result.append(f"__TABLE_ROW__{line}")
+            continue
+
+        if stripped.startswith("**") and stripped.endswith(":**"):
+            flush_paragraph()
+            close_lists()
+            close_callout()
+            label = stripped[:-3].strip("*")
+            result.append(f'<div class="callout"><span class="callout-label">{html.escape(label)}</span>')
+            callout_open = True
+            continue
+
+        paragraph_lines.append(stripped)
+
+    flush_paragraph()
+    close_lists()
+    close_callout()
+    if section_open:
+        result.append("</section>")
+
+    html_lines = convert_tables(result)
+    html_output = "\n".join(html_lines)
+    html_output = html_output.replace(
+        '<section class="section" id="executive-summary"><div class="section-kicker">Section</div><h2 class="section-title">Executive Summary</h2>',
+        '<section class="section executive-summary" id="executive-summary"><div class="section-kicker">Section</div><h2 class="section-title">Executive Summary</h2>',
     )
 
-    # Convert any remaining **bold** sections
-    html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
-
-    # Wrap in bibliography content div
-    html = f'<div class="bibliography-content">{html}</div>'
-
-    return html
+    return html_output
 
 
-def _convert_lists(html: str) -> str:
-    """Convert markdown lists to HTML lists"""
-    lines = html.split('\n')
-    result = []
-    in_list = False
-    list_level = 0
-
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-
-        # Check for unordered list item
-        if stripped.startswith('- ') or stripped.startswith('* '):
-            if not in_list:
-                result.append('<ul>')
-                in_list = True
-                list_level = len(line) - len(line.lstrip())
-
-            # Get the content after the marker
-            content = stripped[2:]
-            result.append(f'<li>{content}</li>')
-
-        # Check for ordered list item
-        elif re.match(r'^\d+\.\s', stripped):
-            if not in_list:
-                result.append('<ol>')
-                in_list = True
-                list_level = len(line) - len(line.lstrip())
-
-            # Get the content after the number and period
-            content = re.sub(r'^\d+\.\s', '', stripped)
-            result.append(f'<li>{content}</li>')
-
-        else:
-            # Not a list item
-            if in_list:
-                # Check if we're still in the list (indented continuation)
-                current_level = len(line) - len(line.lstrip())
-                if current_level > list_level and stripped:
-                    # Continuation of previous list item
-                    if result[-1].endswith('</li>'):
-                        result[-1] = result[-1][:-5] + ' ' + stripped + '</li>'
-                    continue
-                else:
-                    # End of list
-                    result.append('</ul>' if '<ul>' in '\n'.join(result[-10:]) else '</ol>')
-                    in_list = False
-                    list_level = 0
-
-            result.append(line)
-
-    # Close any remaining open list
-    if in_list:
-        result.append('</ul>' if '<ul>' in '\n'.join(result[-10:]) else '</ol>')
-
-    return '\n'.join(result)
-
-
-def _convert_tables(html: str) -> str:
-    """Convert markdown tables to HTML tables"""
-    lines = html.split('\n')
-    result = []
-    in_table = False
-
-    for i, line in enumerate(lines):
-        if '|' in line and line.strip().startswith('|'):
-            if not in_table:
-                result.append('<table>')
-                in_table = True
-                # This is the header row
-                cells = [cell.strip() for cell in line.split('|')[1:-1]]
-                result.append('<thead><tr>')
-                for cell in cells:
-                    result.append(f'<th>{cell}</th>')
-                result.append('</tr></thead>')
-                result.append('<tbody>')
-            elif '---' in line:
-                # Skip separator row
-                continue
-            else:
-                # Data row
-                cells = [cell.strip() for cell in line.split('|')[1:-1]]
-                result.append('<tr>')
-                for cell in cells:
-                    result.append(f'<td>{cell}</td>')
-                result.append('</tr>')
-        else:
-            if in_table:
-                result.append('</tbody></table>')
-                in_table = False
-            result.append(line)
-
-    if in_table:
-        result.append('</tbody></table>')
-
-    return '\n'.join(result)
-
-
-def _convert_paragraphs(html: str) -> str:
-    """Wrap non-HTML lines in paragraph tags"""
-    lines = html.split('\n')
-    result = []
-    in_paragraph = False
-
-    for line in lines:
-        stripped = line.strip()
-
-        # Skip empty lines
-        if not stripped:
-            if in_paragraph:
-                result.append('</p>')
-                in_paragraph = False
-            result.append(line)
+def convert_tables(lines: List[str]) -> List[str]:
+    """Convert placeholder-marked markdown tables into HTML tables."""
+    converted: List[str] = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if not line.startswith("__TABLE_ROW__"):
+            converted.append(line)
+            i += 1
             continue
 
-        # Skip lines that are already HTML tags
-        if (stripped.startswith('<') and stripped.endswith('>')) or \
-           stripped.startswith('</') or \
-           '<h' in stripped or '<div' in stripped or '<ul' in stripped or \
-           '<ol' in stripped or '<li' in stripped or '<table' in stripped or \
-           '</div>' in stripped or '</ul>' in stripped or '</ol>' in stripped:
-            if in_paragraph:
-                result.append('</p>')
-                in_paragraph = False
-            result.append(line)
+        raw_rows = []
+        while i < len(lines) and lines[i].startswith("__TABLE_ROW__"):
+            raw_rows.append(lines[i].replace("__TABLE_ROW__", "", 1))
+            i += 1
+
+        if len(raw_rows) < 2:
+            converted.extend(raw_rows)
             continue
 
-        # Regular text line - wrap in paragraph
-        if not in_paragraph:
-            result.append('<p>' + line)
-            in_paragraph = True
-        else:
-            result.append(line)
+        header_cells = [replace_inline_formatting(cell.strip()) for cell in raw_rows[0].split("|")[1:-1]]
+        body_rows = raw_rows[2:] if "---" in raw_rows[1] else raw_rows[1:]
 
-    if in_paragraph:
-        result.append('</p>')
+        converted.append("<table>")
+        converted.append("<thead><tr>")
+        converted.extend(f"<th>{cell}</th>" for cell in header_cells)
+        converted.append("</tr></thead>")
+        converted.append("<tbody>")
+        for row in body_rows:
+            cells = [replace_inline_formatting(cell.strip()) for cell in row.split("|")[1:-1]]
+            converted.append("<tr>")
+            converted.extend(f"<td>{cell}</td>" for cell in cells)
+            converted.append("</tr>")
+        converted.append("</tbody></table>")
 
-    return '\n'.join(result)
-
-
-def _close_sections(html: str) -> str:
-    """Close all open section divs"""
-    # Count open and closed divs
-    open_divs = html.count('<div class="section">')
-    closed_divs = html.count('</div>')
-
-    # Add closing divs for sections
-    # Each section should be closed before the next section starts
-    lines = html.split('\n')
-    result = []
-    section_open = False
-
-    for i, line in enumerate(lines):
-        if '<div class="section">' in line:
-            if section_open:
-                result.append('</div>')  # Close previous section
-            section_open = True
-        result.append(line)
-
-    # Close final section if still open
-    if section_open:
-        result.append('</div>')
-
-    return '\n'.join(result)
+    return converted
 
 
-def main():
-    """Test the converter with a sample markdown file"""
-    import sys
+def build_html_document(markdown_text: str, template_text: str) -> str:
+    """Build the final HTML document from markdown and the template."""
+    parsed = parse_report(markdown_text)
+    title = extract_title(parsed.body, parsed.metadata)
+    subtitle = extract_subtitle(parsed.body)
+    date_value = extract_date(parsed.metadata)
+    mode_label = extract_mode_label(parsed.metadata)
+    header_tag = extract_header_tag(parsed.metadata)
 
-    if len(sys.argv) < 2:
-        print("Usage: python md_to_html.py <markdown_file>")
-        sys.exit(1)
+    content_md, bibliography_md, tail_md = extract_bibliography_and_tail(parsed.body)
+    if tail_md.strip():
+        content_md = f"{content_md.rstrip()}\n\n{tail_md}\n"
 
-    md_file = Path(sys.argv[1])
-    if not md_file.exists():
-        print(f"Error: File {md_file} not found")
-        sys.exit(1)
+    sections = extract_sections(content_md)
+    metrics = extract_metrics(parsed.body)
+    bibliography_html = convert_bibliography(bibliography_md)
+    content_html = convert_content(content_md)
 
-    markdown_text = md_file.read_text()
-    content_html, bib_html = convert_markdown_to_html(markdown_text)
+    source_count = len(re.findall(r"^\[\d+\]", bibliography_md, re.MULTILINE))
+    replacements = {
+        "{{TITLE}}": html.escape(title),
+        "{{SUBTITLE}}": html.escape(subtitle),
+        "{{DATE}}": html.escape(date_value),
+        "{{MODE_LABEL}}": html.escape(mode_label),
+        "{{HEADER_TAG}}": html.escape(header_tag),
+        "{{SOURCE_COUNT}}": str(source_count),
+        "{{SECTION_COUNT}}": str(len(sections)),
+        "{{METRICS_DASHBOARD}}": render_metrics_dashboard(metrics),
+        "{{NAV_LINKS}}": render_nav_links(sections),
+        "{{SIDEBAR_LINKS}}": render_sidebar_links(sections),
+        "{{CONTENT}}": content_html,
+        "{{BIBLIOGRAPHY}}": bibliography_html,
+    }
 
-    print("=== CONTENT HTML ===")
-    print(content_html[:1000])
-    print("\n=== BIBLIOGRAPHY HTML ===")
-    print(bib_html[:500])
+    html_document = template_text
+    for placeholder, value in replacements.items():
+        html_document = html_document.replace(placeholder, value)
+
+    return html_document
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Convert a markdown report to HTML",
+        epilog="Example: python scripts/md_to_html.py report.md --output report.html",
+    )
+    parser.add_argument("markdown_file", type=Path, help="Path to markdown report")
+    parser.add_argument("--output", "-o", type=Path, help="Output HTML path (default: input stem + .html)")
+    args = parser.parse_args()
+
+    if not args.markdown_file.exists():
+        print(f"ERROR: File not found: {args.markdown_file}")
+        return 1
+
+    template_path = Path(__file__).resolve().parents[1] / "templates" / "mckinsey_report_template.html"
+    if not template_path.exists():
+        print(f"ERROR: Template not found: {template_path}")
+        return 1
+
+    output_path = args.output or args.markdown_file.with_suffix(".html")
+
+    try:
+        markdown_text = args.markdown_file.read_text(encoding="utf-8")
+        template_text = template_path.read_text(encoding="utf-8")
+        output_path.write_text(build_html_document(markdown_text, template_text), encoding="utf-8")
+    except Exception as exc:
+        print(f"ERROR: Failed to convert markdown: {exc}")
+        return 1
+
+    print(f"OK: wrote {output_path}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

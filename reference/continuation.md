@@ -10,15 +10,15 @@ Trigger auto-continuation when report exceeds 18,000 words in single run.
 
 1. Generate sections 1-10 (stay under 18K words)
 2. Save continuation state file with context preservation
-3. Spawn continuation agent via Task tool
-4. Continuation agent: Reads state -> Generates next batch -> Spawns next if needed
+3. Launch a continuation workstream or delegated agent if the environment supports it
+4. Continuation workstream: reads state -> generates next batch -> hands off again if needed
 5. Chain continues recursively until complete
 
 ---
 
 ## Continuation State File
 
-**Location:** `~/.claude/research_output/continuation_state_[report_id].json`
+**Location:** `./.research_output/continuation_state_[report_id].json` relative to the current working directory
 
 ```json
 {
@@ -69,19 +69,18 @@ Trigger auto-continuation when report exceeds 18,000 words in single run.
 
 ---
 
-## Spawning Continuation Agent
+## Launching Continuation Work
 
-Use Task tool:
+Use the environment's delegation mechanism if available. Otherwise, continue locally in multiple passes using the saved state file.
 
 ```
-Task(
-  subagent_type="general-purpose",
+delegated_workstream(
   description="Continue deep-research report generation",
-  prompt="""
+  instructions="""
 CONTINUATION TASK: Continue existing deep-research report.
 
 CRITICAL INSTRUCTIONS:
-1. Read continuation state: ~/.claude/research_output/continuation_state_[report_id].json
+1. Read continuation state: ./.research_output/continuation_state_[report_id].json
 2. Read existing report: [file_path from state]
 3. Read LAST 3 completed sections for flow/style
 4. Load research context: themes, narrative arc, writing style
@@ -92,7 +91,7 @@ YOUR TASK:
 Generate next batch (stay under 18,000 words):
 [List next_sections from state]
 
-Use Write/Edit to append to: [file_path]
+Append to: [file_path]
 
 QUALITY GATES:
 - Words per section: Within +/-20% of avg_words_per_finding
@@ -139,7 +138,7 @@ After generating:
    - Theme connection verified
    - Style consistent
 3. If ANY fails: Regenerate
-4. If passes: Write to file, update state
+4. If passes: append to file, update state
 
 ### Handoff Decision
 
@@ -153,14 +152,14 @@ Calculate: Current words + remaining sections x avg_words_per_section
 - Generate COMPLETE bibliography from state.citations.bibliography_entries
 - Read entire assembled report
 - Run validation: `python scripts/validate_report.py --report [path]`
-- Delete continuation_state.json (cleanup)
+- Delete continuation_state.json when the report is complete (cleanup)
 - Report complete to user
 
 ---
 
 ## User Communication
 
-After spawning continuation:
+After launching continuation:
 ```
 Report Generation: Part 1 Complete (N sections, X words)
 Auto-continuing via spawned agent...

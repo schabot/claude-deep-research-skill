@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/continuation_state.schema.json",
+  "title": "Continuation State",
+  "type": "object",
+  "required": [
+    "mode",
+    "cycle_index",
+    "max_cycles",
+    "sections",
+    "global_metrics",
+    "gates",
+    "can_finalize",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["quick", "standard", "deep", "ultradeep"]
+    },
+    "cycle_index": {"type": "integer", "minimum": 0},
+    "max_cycles": {"type": "integer", "minimum": 1},
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "min_words", "target_words", "status", "attempts", "citations_count"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "min_words": {"type": "integer", "minimum": 1},
+          "target_words": {"type": "integer", "minimum": 1},
+          "status": {"type": "string", "enum": ["pending", "in_progress", "complete", "blocked"]},
+          "attempts": {"type": "integer", "minimum": 0},
+          "citations_count": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "global_metrics": {
+      "type": "object",
+      "required": ["total_words", "unique_citations", "bibliography_entries"],
+      "properties": {
+        "total_words": {"type": "integer", "minimum": 0},
+        "unique_citations": {"type": "integer", "minimum": 0},
+        "bibliography_entries": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "boolean"}
+    },
+    "can_finalize": {"type": "boolean"},
+    "blocking_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}

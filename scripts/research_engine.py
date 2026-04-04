@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Deep Research Engine for Claude Code
-Orchestrates comprehensive research across multiple sources with verification and synthesis
+Codex research engine scaffold.
+Prints structured phase instructions and writes run artifacts to disk.
 """
 
 import argparse
@@ -122,10 +122,10 @@ class ResearchState:
 class ResearchEngine:
     """Main research orchestration engine"""
 
-    def __init__(self, mode: ResearchMode = ResearchMode.STANDARD):
+    def __init__(self, mode: ResearchMode = ResearchMode.STANDARD, output_dir: Optional[Path] = None):
         self.mode = mode
         self.state: Optional[ResearchState] = None
-        self.output_dir = Path.home() / ".claude" / "research_output"
+        self.output_dir = output_dir or (Path.cwd() / "research_output")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def initialize_research(self, query: str) -> ResearchState:
@@ -210,18 +210,18 @@ Use Graph-of-Thoughts: branch into 3-4 potential research paths, evaluate, then 
 Your task: Systematically collect information from multiple sources
 
 ## Execute:
-1. Use WebSearch with iterative query refinement (minimum 10 searches)
-2. Use WebFetch to deep-dive into 5-10 most promising sources
+1. Use the runtime's native web-search capability with iterative query refinement (minimum 10 searches)
+2. Use the runtime's page-open/fetch capability to deep-dive into 5-10 most promising sources
 3. Extract key passages with metadata
 4. Track information gaps
 5. Follow 2-3 promising tangents
 6. Ensure source diversity (different domains, perspectives)
 
 ## Tools to Use:
-- WebSearch: For current information and broad coverage
-- WebFetch: For detailed extraction from specific URLs
+- Native web search: For current information and broad coverage
+- Native page-open/fetch: For detailed extraction from specific URLs
 - Grep/Read: For local documentation if relevant
-- Task: Spawn 2-3 parallel retrieval agents for efficiency
+- Delegation/parallelism support: Spawn 2-3 parallel retrieval workstreams when available
 
 ## Output:
 Store all sources with metadata. Each source should include:
@@ -448,8 +448,8 @@ Save report to file with timestamp.
         instructions = self.get_phase_instructions(phase)
         print(instructions)
 
-        # In real usage, Claude will execute these instructions
-        # This returns a structured result that Claude should populate
+        # In real usage, the agent executes these instructions.
+        # Return a minimal structured phase marker for state persistence.
         result = {
             'phase': phase.value,
             'status': 'instructions_displayed',
@@ -521,7 +521,7 @@ Save report to file with timestamp.
 def main():
     """CLI entry point"""
     parser = argparse.ArgumentParser(
-        description="Deep Research Engine for Claude Code",
+        description="Codex deep research engine scaffold",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -552,11 +552,18 @@ Examples:
         help='Resume from saved state file'
     )
 
+    parser.add_argument(
+        '--output-dir',
+        type=Path,
+        default=Path.cwd() / "research_output",
+        help='Directory for run artifacts (default: ./research_output)'
+    )
+
     args = parser.parse_args()
 
     # Initialize engine
     mode = ResearchMode(args.mode)
-    engine = ResearchEngine(mode=mode)
+    engine = ResearchEngine(mode=mode, output_dir=args.output_dir)
 
     if args.resume:
         # Load previous state
@@ -571,7 +578,7 @@ Examples:
     report_path = engine.run_pipeline(args.query)
 
     print(f"\nResearch complete! Report path: {report_path}")
-    print(f"\nNow Claude should execute each phase using the displayed instructions.")
+    print("\nNext step: execute the printed phase instructions in your Codex workflow.")
 
 
 if __name__ == '__main__':

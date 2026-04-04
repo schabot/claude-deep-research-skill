@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Commerce for Canadian Tire Corporation — UltraDeep Research</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #1a1a1a; background: #f5f5f5; }
+        .container { max-width: 1280px; margin: 0 auto; background: white; box-shadow: 0 0 40px rgba(0,0,0,0.1); }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #c8102e 0%, #9e0d24 60%, #7a0a1c 100%); color: white; padding: 48px 64px 40px; position: relative; overflow: hidden; }
+        .header::before { content: ""; position: absolute; top: -50%; right: -5%; width: 400px; height: 400px; background: rgba(255,255,255,0.04); border-radius: 50%; }
+        .header::after { content: ""; position: absolute; bottom: -30%; right: 15%; width: 250px; height: 250px; background: rgba(255,255,255,0.03); border-radius: 50%; }
+        .header-tag { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.65); font-weight: 700; margin-bottom: 16px; }
+        .header h1 { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 12px; letter-spacing: -0.5px; max-width: 700px; }
+        .header-sub { font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 24px; font-weight: 300; max-width: 600px; line-height: 1.5; }
+        .header-meta { font-size: 11px; color: rgba(255,255,255,0.55); display: flex; gap: 28px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 18px; flex-wrap: wrap; }
+        .header-meta span { display: flex; align-items: center; gap: 6px; }
+        .header-meta span::before { content: "▸"; color: rgba(255,255,255,0.4); }
+
+        /* Metrics */
+        .metrics-bar { display: grid; grid-template-columns: repeat(5, 1fr); background: #1a1a1a; }
+        .metric { padding: 20px 16px; text-align: center; border-right: 1px solid #2d2d2d; }
+        .metric:last-child { border-right: none; }
+        .metric-number { font-size: 24px; font-weight: 800; color: #c8102e; display: block; margin-bottom: 5px; }
+        .metric-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; line-height: 1.4; }
+
+        /* Nav */
+        .nav { background: #f8f8f8; border-bottom: 2px solid #c8102e; padding: 0 64px; display: flex; gap: 0; overflow-x: auto; }
+        .nav a { font-size: 11px; color: #444; text-decoration: none; font-weight: 600; letter-spacing: 0.5px; padding: 12px 16px; white-space: nowrap; text-transform: uppercase; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .nav a:hover { color: #c8102e; border-bottom-color: #c8102e; }
+
+        /* Layout */
+        .content-wrapper { display: grid; grid-template-columns: 260px 1fr; }
+
+        /* Sidebar */
+        .sidebar { background: #fafafa; border-right: 1px solid #e8e8e8; padding: 28px 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .sidebar h3 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #c8102e; font-weight: 800; margin-bottom: 10px; margin-top: 22px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; }
+        .sidebar li { margin-bottom: 3px; }
+        .sidebar a { font-size: 12px; color: #555; text-decoration: none; line-height: 1.5; display: block; padding: 4px 8px; border-left: 2px solid transparent; border-radius: 0 2px 2px 0; }
+        .sidebar a:hover { color: #c8102e; border-left-color: #c8102e; background: #fff5f5; }
+        .sidebar .uc-badge { display: inline-block; background: #c8102e; color: white; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 2px; margin-right: 4px; }
+        .sidebar .stat-box { background: white; border: 1px solid #e8e8e8; border-top: 2px solid #c8102e; padding: 12px; margin: 10px 0; border-radius: 2px; }
+        .sidebar .stat-box .big { font-size: 20px; font-weight: 800; color: #c8102e; }
+        .sidebar .stat-box .lbl { font-size: 10px; color: #888; margin-top: 2px; line-height: 1.4; }
+
+        /* Main */
+        .main { padding: 48px 64px; }
+
+        /* Exec summary */
+        .exec-summary { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 40px 44px; margin-bottom: 48px; border-radius: 4px; border-left: 5px solid #c8102e; }
+        .exec-summary h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #c8102e; margin-bottom: 18px; font-weight: 700; }
+        .exec-summary p { font-size: 14px; line-height: 1.75; color: #d4d4d4; margin-bottom: 14px; }
+        .exec-summary .key-arg { font-size: 15px; color: white; font-style: italic; border-left: 3px solid #c8102e; padding-left: 16px; margin: 20px 0; line-height: 1.6; }
+
+        /* Use case grid */
+        .uc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 28px 0; }
+        .uc-card { background: white; border: 1px solid #e8e8e8; padding: 20px; border-radius: 3px; border-top: 3px solid; }
+        .uc-card.near { border-top-color: #c8102e; }
+        .uc-card.mid { border-top-color: #e8730f; }
+        .uc-card.long { border-top-color: #888; }
+        .uc-num { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .uc-card.near .uc-num { color: #c8102e; }
+        .uc-card.mid .uc-num { color: #e8730f; }
+        .uc-card.long .uc-num { color: #888; }
+        .uc-card h4 { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; line-height: 1.3; }
+        .uc-card p { font-size: 12px; color: #555; line-height: 1.55; margin: 0; }
+
+        /* Sections */
+        .section { margin-bottom: 52px; border-top: 2px solid #e8e8e8; padding-top: 36px; }
+        .section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #c8102e; margin-bottom: 6px; }
+        .section h2 { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 20px; line-height: 1.2; letter-spacing: -0.3px; }
+        .section h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+        .section h4 { font-size: 14px; font-weight: 700; color: #c8102e; margin: 20px 0 10px; }
+        .section p { font-size: 14px; color: #2d2d2d; line-height: 1.8; margin-bottom: 16px; }
+        .section p:last-child { margin-bottom: 0; }
+
+        /* Code block */
+        .code-block { background: #1a1a1a; color: #e0e0e0; padding: 24px 28px; border-radius: 4px; margin: 20px 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; border-left: 4px solid #c8102e; }
+        .code-comment { color: #888; }
+        .code-string { color: #98c379; }
+        .code-key { color: #e5c07b; }
+        .code-num { color: #d19a66; }
+
+        /* Architecture diagram */
+        .arch-stack { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 4px; overflow: hidden; margin: 20px 0; }
+        .arch-layer { padding: 14px 20px; border-bottom: 1px solid #e8e8e8; display: flex; align-items: center; gap: 16px; }
+        .arch-layer:last-child { border-bottom: none; }
+        .arch-layer-num { width: 28px; height: 28px; background: #c8102e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .arch-layer-title { font-size: 13px; font-weight: 700; color: #1a1a1a; min-width: 220px; }
+        .arch-layer-desc { font-size: 12px; color: #666; flex: 1; }
+        .arch-layer.highlight { background: #fff5f5; }
+
+        /* Pull quote */
+        .pull-quote { background: #fff5f5; border-left: 5px solid #c8102e; padding: 20px 28px; margin: 24px 0; border-radius: 0 4px 4px 0; }
+        .pull-quote p { font-size: 15px; font-style: italic; color: #c8102e; font-weight: 600; line-height: 1.5; margin: 0; }
+        .pull-quote cite { font-size: 12px; color: #888; font-style: normal; display: block; margin-top: 8px; }
+
+        /* Data highlights */
+        .data-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+        .data-card { background: #1a1a1a; color: white; padding: 18px; border-radius: 3px; text-align: center; }
+        .data-card .num { font-size: 26px; font-weight: 800; color: #c8102e; display: block; margin-bottom: 5px; }
+        .data-card .lbl { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.4; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; }
+        th { background: #1a1a1a; color: white; padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        td { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; color: #333; line-height: 1.5; vertical-align: top; }
+        tr:hover td { background: #fafafa; }
+        td strong { color: #c8102e; }
+
+        /* Best practices */
+        .bp-box { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 3px; padding: 22px 26px; margin: 20px 0; }
+        .bp-box h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #c8102e; font-weight: 800; margin-bottom: 14px; }
+        .bp-box ul { list-style: none; }
+        .bp-box li { font-size: 13px; color: #333; padding: 7px 0; padding-left: 20px; position: relative; border-bottom: 1px solid #ebebeb; line-height: 1.55; }
+        .bp-box li:last-child { border-bottom: none; }
+        .bp-box li::before { content: "→"; color: #c8102e; font-weight: 700; position: absolute; left: 0; }
+
+        /* Warning/risk */
+        .risk-box { background: #fff5f5; border: 1px solid #fecaca; border-left: 4px solid #c8102e; border-radius: 2px; padding: 16px 20px; margin: 16px 0; }
+        .risk-box h5 { font-size: 11px; font-weight: 800; color: #c8102e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .risk-box p { font-size: 13px; color: #7f1d1d; line-height: 1.6; margin: 0; }
+
+        /* Insight box */
+        .insight-box { background: #f0f7f0; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 2px; padding: 16px 20px; margin: 16px 0; }
+        .insight-box h5 { font-size: 11px; font-weight: 800; color: #16a34a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .insight-box p { font-size: 13px; color: #14532d; line-height: 1.6; margin: 0; }
+
+        /* Roadmap */
+        .roadmap { margin: 24px 0; }
+        .roadmap-phase { background: white; border: 1px solid #e8e8e8; border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+        .roadmap-header { padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+        .roadmap-header.p0 { background: #1a1a1a; color: white; }
+        .roadmap-header.p1 { background: #c8102e; color: white; }
+        .roadmap-header.p2 { background: #e8730f; color: white; }
+        .roadmap-header.p3 { background: #1d4ed8; color: white; }
+        .roadmap-header.p4 { background: #16a34a; color: white; }
+        .roadmap-phase-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; opacity: 0.8; }
+        .roadmap-phase-title { font-size: 15px; font-weight: 700; }
+        .roadmap-phase-timeline { margin-left: auto; font-size: 12px; opacity: 0.75; }
+        .roadmap-body { padding: 16px 20px; }
+        .roadmap-body p { font-size: 13px; color: #444; line-height: 1.6; margin: 0 0 8px; }
+        .roadmap-body ul { list-style: none; padding: 0; }
+        .roadmap-body li { font-size: 12px; color: #555; padding: 3px 0 3px 16px; position: relative; }
+        .roadmap-body li::before { content: "•"; color: #c8102e; position: absolute; left: 0; font-weight: 700; }
+
+        /* Strategic choice */
+        .strategy-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+        .strategy-card { padding: 20px; border-radius: 3px; border-top: 3px solid; }
+        .strategy-card.closed { background: #1a1a1a; border-top-color: #888; color: white; }
+        .strategy-card.open { background: #1a3a5c; border-top-color: #3b82f6; color: white; }
+        .strategy-card.hybrid { background: #c8102e; border-top-color: #ff6b6b; color: white; }
+        .strategy-card .s-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-bottom: 8px; font-weight: 700; }
+        .strategy-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+        .strategy-card p { font-size: 12px; opacity: 0.85; line-height: 1.55; margin-bottom: 8px; }
+        .strategy-card .exemplar { font-size: 11px; opacity: 0.65; font-style: italic; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.15); }
+
+        /* Rec grid */
+        .rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+        .rec-card { background: #fafafa; border: 1px solid #e8e8e8; border-top: 3px solid #c8102e; padding: 20px; border-radius: 2px; }
+        .rec-card h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #c8102e; font-weight: 800; margin-bottom: 12px; }
+        .rec-card ol { padding-left: 16px; }
+        .rec-card li { font-size: 12px; color: #333; line-height: 1.6; margin-bottom: 8px; }
+
+        /* Bibliography */
+        .bib-list { list-style: none; }
+        .bib-list li { font-size: 12px; color: #555; padding: 8px 0; border-bottom: 1px solid #f5f5f5; line-height: 1.5; }
+        .bib-list li .ref-num { color: #c8102e; font-weight: 800; margin-right: 8px; min-width: 30px; display: inline-block; }
+        .bib-list li a { color: #1d4ed8; text-decoration: none; }
+        .bib-list li a:hover { text-decoration: underline; }
+
+        /* Footer */
+        .footer { background: #1a1a1a; color: #666; padding: 20px 64px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+
+        @media (max-width: 1000px) {
+            .content-wrapper { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .main { padding: 24px; }
+            .header { padding: 24px; }
+            .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+            .uc-grid, .data-row, .rec-grid, .strategy-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-tag">UltraDeep Research Report · For Consulting Product Strategists</div>
+        <h1>Designing and Implementing Agentic Commerce for a Large Multi-Brand Retailer</h1>
+        <div class="header-sub">A Canadian Tire Corporation playbook: use cases, technical architecture, ecosystem strategy, and a four-phase implementation roadmap</div>
+        <div class="header-meta">
+            <span>March 20, 2026</span>
+            <span>45+ Sources</span>
+            <span>UltraDeep Mode · 8-Phase Pipeline</span>
+            <span>Retail · AI Strategy · Technology Architecture</span>
+            <span>Claude Code Deep Research</span>
+        </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-bar">
+        <div class="metric"><span class="metric-number">$3–5T</span><span class="metric-label">Global agentic commerce by 2030 (McKinsey)</span></div>
+        <div class="metric"><span class="metric-number">1 in 5</span><span class="metric-label">Cyber Week 2025 orders placed via AI agent</span></div>
+        <div class="metric"><span class="metric-number">74%</span><span class="metric-label">Canadian consumers comfortable with AI completing purchases (Mar 2026)</span></div>
+        <div class="metric"><span class="metric-number">17M+</span><span class="metric-label">Triangle Rewards members — CTC's intelligence layer</span></div>
+        <div class="metric"><span class="metric-number">35%</span><span class="metric-label">Higher AOV — Walmart Sparky users vs. non-users</span></div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="nav">
+        <a href="#exec">Summary</a>
+        <a href="#market">Market</a>
+        <a href="#stack">Tech Stack</a>
+        <a href="#ctc-foundation">CTC Foundation</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#loyalty">Loyalty-Agentic</a>
+        <a href="#strategy">Open vs. Closed</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#vendors">Vendors</a>
+        <a href="#risk">Risk &amp; Regulatory</a>
+        <a href="#synthesis">Synthesis</a>
+        <a href="#recs">Recommendations</a>
+        <a href="#bibliography">Bibliography</a>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Contents</h3>
+            <ul>
+                <li><a href="#exec">Executive Summary</a></li>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#market">Market Context</a></li>
+                <li><a href="#stack">Tech Architecture</a></li>
+                <li><a href="#ctc-foundation">CTC's AI Foundation</a></li>
+                <li><a href="#use-cases">10 Use Cases</a></li>
+                <li><a href="#loyalty">Loyalty-Agentic Bridge</a></li>
+                <li><a href="#strategy">Open vs. Closed Strategy</a></li>
+                <li><a href="#roadmap">Implementation Roadmap</a></li>
+                <li><a href="#vendors">Vendor Landscape</a></li>
+                <li><a href="#risk">Risk &amp; Regulatory</a></li>
+                <li><a href="#synthesis">Synthesis</a></li>
+                <li><a href="#recs">Recommendations</a></li>
+                <li><a href="#bibliography">Bibliography</a></li>
+            </ul>
+
+            <h3>Near-Term Use Cases</h3>
+            <ul>
+                <li><a href="#uc1"><span class="uc-badge">UC1</span> Occasion Agent</a></li>
+                <li><a href="#uc2"><span class="uc-badge">UC2</span> Automotive Agent</a></li>
+                <li><a href="#uc3"><span class="uc-badge">UC3</span> Project Planner</a></li>
+                <li><a href="#uc4"><span class="uc-badge">UC4</span> Cross-Banner Planner</a></li>
+            </ul>
+
+            <h3>Mid-Term Use Cases</h3>
+            <ul>
+                <li><a href="#uc5"><span class="uc-badge">UC5</span> Financial Wellness</a></li>
+                <li><a href="#uc6"><span class="uc-badge">UC6</span> Pro/Contractor</a></li>
+                <li><a href="#uc7"><span class="uc-badge">UC7</span> Post-Purchase</a></li>
+                <li><a href="#uc8"><span class="uc-badge">UC8</span> In-Store Mobile</a></li>
+            </ul>
+
+            <h3>Long-Term Use Cases</h3>
+            <ul>
+                <li><a href="#uc9"><span class="uc-badge">UC9</span> Auto Replenishment</a></li>
+                <li><a href="#uc10"><span class="uc-badge">UC10</span> External Interface</a></li>
+            </ul>
+
+            <h3>Key CTC Stats</h3>
+            <div class="stat-box"><div class="big">MOSaiC</div><div class="lbl">Azure AI platform scaling across Canadian Tire, Mark's, SportChek in 2026</div></div>
+            <div class="stat-box"><div class="big">17M+</div><div class="lbl">Triangle Rewards members — largest retail loyalty program in Canada</div></div>
+            <div class="stat-box"><div class="big">1,700+</div><div class="lbl">Retail and dealer locations across Canada</div></div>
+            <div class="stat-box"><div class="big">CT Bank</div><div class="lbl">Regulated financial institution — unique CX asset for financial wellness agent</div></div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+
+            <!-- Exec Summary -->
+            <div id="exec" class="exec-summary">
+                <h2>Executive Summary</h2>
+                <p>Agentic commerce — where AI agents autonomously discover, compare, negotiate, and transact on behalf of consumers — represents the largest structural shift in retail since the internet. McKinsey estimates the global opportunity at $3–5 trillion in orchestrated commerce by 2030. During Cyber Week 2025, one in five orders already involved an AI agent. The transition is not hypothetical.</p>
+                <p>Canadian Tire Corporation is uniquely positioned to win this transition — and uniquely exposed to losing it. The company's MOSaiC platform (scaling across all three major banners in 2026), its Triangle Rewards network (17M+ members, Canada's largest retail loyalty program), its five distinct banners spanning hardware, sporting goods, apparel, outdoor, and automotive, and its Canadian Tire Bank give it an asset combination that no Canadian competitor can replicate.</p>
+                <p>This report delivers a comprehensive playbook: the six-layer technology architecture; ten prioritized use cases; the open vs. closed ecosystem strategic choice; and a four-phase roadmap from data foundation (2026) through autonomous multi-step commerce (2028+).</p>
+                <div class="key-arg">"Triangle Rewards is not a loyalty program. It is an intelligence layer — the only permissioned, first-party, cross-banner customer data asset in Canada with the breadth and depth to power genuinely differentiated agentic commerce. The organizations that win in agentic commerce are those with privileged data. CTC has it."</div>
+            </div>
+
+            <!-- Market -->
+            <div id="market" class="section">
+                <div class="section-label">Section 1</div>
+                <h2>Market Context and Strategic Imperative</h2>
+
+                <div class="data-row">
+                    <div class="data-card"><span class="num">$5T</span><span class="lbl">Global agentic commerce by 2030 (McKinsey high estimate)</span></div>
+                    <div class="data-card"><span class="num">20%</span><span class="lbl">Of Cyber Week 2025 orders involved an AI agent</span></div>
+                    <div class="data-card"><span class="num">48%</span><span class="lbl">Of retailers deploying agentic AI in 2026</span></div>
+                    <div class="data-card"><span class="num">77%</span><span class="lbl">Of global retailers: autonomous AI will be biggest differentiator</span></div>
+                </div>
+
+                <p>McKinsey's October 2025 report, "The Agentic Commerce Opportunity," frames agentic commerce as a "seismic shift" transforming shopping from discrete steps — searching, browsing, comparing, buying — into a continuous, intent-driven flow powered by autonomous AI systems [1]. BCG calls for "immediate strategic response," noting that the transition will happen faster than prior digital transformations because it operates on existing infrastructure [2].</p>
+
+                <div class="pull-quote">
+                    <p>"Multibrand retailers and marketplaces will likely face a greater disintermediation threat, as third-party AI agents increase market transparency, and retailers that cannot compete based on price, unique assortment, or shipping speed alone will need to develop a competitive differentiator that is attractive to agents."</p>
+                    <cite>— BCG, "Agentic Commerce is Redefining Retail: How to Respond" [2]</cite>
+                </div>
+
+                <h3>CTC's Unique Asset Position</h3>
+                <p>CTC enters the agentic era with five structural advantages that, combined, are unmatched in Canadian retail: <strong>Triangle Rewards</strong> (17M+ members, first-party cross-category data), <strong>multi-banner ecosystem</strong> (five banners spanning every major life moment from automotive to sporting goods), <strong>Canadian Tire Bank</strong> (financial product relationships unavailable to competitors), <strong>MOSaiC platform</strong> (occasion intelligence already operational), and <strong>automotive services moat</strong> (Canada's largest auto parts retailer with service bays — unreplicable by Amazon or Walmart).</p>
+
+                <div class="pull-quote">
+                    <p>"Consumers trust retailers' own on-site agents 3x more than third-party agents like ChatGPT or Perplexity — making the case for CTC building a Triangle-grounded agent rather than ceding that ground to Google or OpenAI."</p>
+                    <cite>— Bain &amp; Company, Agentic AI in Retail [7]</cite>
+                </div>
+
+                <h3>The Loblaw Benchmark: Canada's Agentic Commerce Leader</h3>
+                <p>CTC's most important Canadian competitor is executing a concrete, dual-track agentic strategy that is already live as of February 2026. Understanding this is essential context for the urgency of CTC's response.</p>
+
+                <div class="data-row">
+                    <div class="data-card"><span class="num">Track 1</span><span class="lbl">Proprietary AI — PC Optimum personalization for 15.5M members, Robin store manager agent</span></div>
+                    <div class="data-card"><span class="num">Track 2</span><span class="lbl">Third-party presence — PC Express embedded in ChatGPT; products purchasable via Google AI Mode and Gemini</span></div>
+                    <div class="data-card"><span class="num">Feb 2026</span><span class="lbl">Loblaw became the first Canadian retailer in ChatGPT's shopping platform and Google Gemini</span></div>
+                    <div class="data-card"><span class="num">$2.2B</span><span class="lbl">Capital spending committed for 2025–2026 as part of $10B five-year plan</span></div>
+                </div>
+
+                <div class="risk-box">
+                    <h5>Strategic Warning: Loblaw's Third-Party Platform Presence</h5>
+                    <p>Loblaw's CDO frames third-party AI integration as "a natural evolution of how customers want to shop." If 17% of Canadian consumers already begin shopping discovery via AI agents — and that share grows to 30–40% by 2028 — any CTC product not findable in Gemini or ChatGPT is invisible to a growing segment of high-intent shoppers. CTC needs a third-party presence strategy alongside its proprietary MOSaiC approach. [39][40]</p>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div id="stack" class="section">
+                <div class="section-label">Section 2</div>
+                <h2>The Agentic Commerce Technology Stack</h2>
+
+                <p>Agentic commerce is not a single technology — it is a stack of six interdependent layers. Understanding each layer is essential to making informed build/buy/partner decisions.</p>
+
+                <div class="arch-stack">
+                    <div class="arch-layer"><div class="arch-layer-num">6</div><div class="arch-layer-title">Protocol &amp; Ecosystem Interface</div><div class="arch-layer-desc">UCP, ACP, Visa Trusted Agent Protocol — how external agents reach CTC catalog, inventory, and checkout</div></div>
+                    <div class="arch-layer"><div class="arch-layer-num">5</div><div class="arch-layer-title">Orchestration Framework</div><div class="arch-layer-desc">LangGraph, AutoGen (Microsoft), Agentforce — multi-agent planning, tool sequencing, state management</div></div>
+                    <div class="arch-layer highlight"><div class="arch-layer-num" style="background:#1a1a1a">4</div><div class="arch-layer-title" style="color:#c8102e">Integration Bus (Tool Layer)</div><div class="arch-layer-desc"><strong>APIs connecting to OMS, PIM, CDP, Triangle Rewards loyalty engine, inventory, automotive service records</strong></div></div>
+                    <div class="arch-layer"><div class="arch-layer-num">3</div><div class="arch-layer-title">Memory &amp; Context</div><div class="arch-layer-desc">Short-term (conversation), long-term (Triangle customer profile), semantic (product knowledge), episodic (interaction history)</div></div>
+                    <div class="arch-layer highlight"><div class="arch-layer-num" style="background:#1a1a1a">2</div><div class="arch-layer-title" style="color:#c8102e">Retrieval &amp; Knowledge (RAG)</div><div class="arch-layer-desc"><strong>Vector DB + product catalog + MOSaiC occasion intelligence — the CTC-specific knowledge layer</strong></div></div>
+                    <div class="arch-layer"><div class="arch-layer-num">1</div><div class="arch-layer-title">LLM Backbone</div><div class="arch-layer-desc">GPT-4o via Azure OpenAI (primary), Gemini (multimodal/external), Claude (document processing) — the reasoning engine</div></div>
+                </div>
+
+                <h3>Layer 1: LLM Backbone</h3>
+                <p>For CTC, the LLM choice is partly determined by the existing Microsoft Azure partnership. <strong>Azure OpenAI Service (GPT-4o)</strong> is the path of least resistance — it runs inside Azure's compliance boundary, shares governance infrastructure with MOSaiC, and benefits from Microsoft's retail AI acceleration programs [8]. A mixed model approach is standard enterprise architecture: Azure OpenAI for customer-facing agents, Claude for document analysis, Gemini for visual search and external agent exposure.</p>
+
+                <h3>Layer 2: Retrieval and Knowledge (Agentic RAG)</h3>
+                <p>For a retailer with CTC's scale (100,000+ SKUs across five banners), RAG requires a vector database for semantic search — "durable waterproof jacket for camping in cold weather" retrieves relevant products even when those exact words don't appear in product descriptions. <strong>Azure AI Search</strong> (native to CTC's existing Microsoft stack) supports hybrid vector + keyword search with reranking. The MOSaiC occasion taxonomy — 1,000+ life occasions — should be embedded as semantic context in the retrieval layer, so product retrieval is occasion-aware, not just query-aware [11].</p>
+
+                <h3>Layer 4: The Tool Layer — What the Agent Can Do</h3>
+                <p>An agent without tools is a chatbot. The tool layer defines what the agent can <em>act on</em>. The minimum viable tool set for a CTC agentic system:</p>
+
+                <div class="code-block"><span class="code-comment"># Minimum viable CTC agent tool set (illustrative)</span>
+tools = [
+    <span class="code-string">"search_product_catalog"</span>,     <span class="code-comment"># Semantic search across 1+ banners, price/category filter</span>
+    <span class="code-string">"check_inventory"</span>,            <span class="code-comment"># Real-time stock at specific store / online</span>
+    <span class="code-string">"get_customer_profile"</span>,       <span class="code-comment"># Triangle Rewards CDP — consent-scoped customer data</span>
+    <span class="code-string">"calculate_triangle_rewards"</span>,  <span class="code-comment"># Real-time earn/burn calc for a proposed cart</span>
+    <span class="code-string">"get_vehicle_service_history"</span>,  <span class="code-comment"># VIN/license plate → service records</span>
+    <span class="code-string">"book_service_appointment"</span>,    <span class="code-comment"># Canadian Tire Auto Centre scheduling</span>
+    <span class="code-string">"apply_promotional_offer"</span>,     <span class="code-comment"># Real-time Triangle offer adjudication</span>
+    <span class="code-string">"get_occasion_context"</span>,        <span class="code-comment"># MOSaiC occasion score for customer × date × location</span>
+    <span class="code-string">"initiate_checkout"</span>,           <span class="code-comment"># Cart → checkout flow (with TAP auth for autonomous)</span>
+    <span class="code-string">"get_project_guide"</span>           <span class="code-comment"># Installation guides, how-to content, compatibility</span>
+]</div>
+
+                <h3>Layer 5: Orchestration — Multi-Agent Architecture for CTC</h3>
+                <p>CTC should architect a hierarchy of specialist agents rather than a single monolithic agent. This mirrors Walmart's documented strategy: "Agents work best when deployed for highly specific tasks, to produce outputs that can then be stitched together to orchestrate and solve complex workflows" [4].</p>
+
+                <div class="code-block">CONDUCTOR AGENT (Triangle Intent Engine)
+├── Occasion Intelligence Agent    <span class="code-comment">→ MOSaiC integration, life moment detection</span>
+├── Product Discovery Agent        <span class="code-comment">→ Cross-banner semantic search + RAG</span>
+├── Loyalty &amp; Offers Agent         <span class="code-comment">→ Triangle Rewards real-time adjudication</span>
+├── Automotive Service Agent       <span class="code-comment">→ Service records, reminders, booking</span>
+├── Checkout &amp; Fulfillment Agent   <span class="code-comment">→ OMS integration, Visa TAP payment auth</span>
+└── Financial Wellness Agent       <span class="code-comment">→ CT Bank integration, earn optimization</span></div>
+
+                <table>
+                    <tr><th>Framework</th><th>Best For</th><th>CTC Fit</th><th>Notes</th></tr>
+                    <tr><td><strong>AutoGen / Azure AI Foundry</strong></td><td>Multi-agent collaboration, Microsoft-native</td><td><strong>Very High</strong></td><td>Native to existing Azure partnership; recommended primary</td></tr>
+                    <tr><td><strong>LangGraph</strong></td><td>Stateful complex workflows</td><td><strong>High</strong></td><td>Best for automotive service agent, cross-banner occasion flows</td></tr>
+                    <tr><td>Salesforce Agentforce</td><td>Managed CX platform</td><td>Medium-High</td><td>12,000+ implementations; fastest time-to-value; vendor lock-in risk</td></tr>
+                    <tr><td>CrewAI</td><td>Role-based internal agents</td><td>Medium</td><td>Better for internal agents (catalog management, buying)</td></tr>
+                </table>
+
+                <h3>Layer 6: Protocol Layer — Getting Found by External Agents</h3>
+                <p>Three protocols are converging as the global standard for agent-commerce interoperability:</p>
+                <ul style="margin:16px 0; padding-left:20px;">
+                    <li style="margin-bottom:10px; font-size:14px; line-height:1.6;"><strong>Universal Commerce Protocol (UCP):</strong> Google/Walmart co-developed open standard for AI agent discovery and purchase routing. Adobe and Salesforce committed in early 2026. Non-compliant retailers are invisible to Google Gemini shopping queries [10].</li>
+                    <li style="margin-bottom:10px; font-size:14px; line-height:1.6;"><strong>Agentic Commerce Protocol (ACP):</strong> Agent-to-merchant communication covering authentication, intent signaling, and transaction authorization across any ACP-compliant agent.</li>
+                    <li style="margin-bottom:10px; font-size:14px; line-height:1.6;"><strong>Visa Trusted Agent Protocol (TAP):</strong> Cryptographically signed HTTP messages that enable merchants to verify a legitimate AI agent transaction from a verified customer — preventing bot fraud while enabling autonomous purchases. Already in production with hundreds of completed transactions [12].</li>
+                </ul>
+            </div>
+
+            <!-- CTC Foundation -->
+            <div id="ctc-foundation" class="section">
+                <div class="section-label">Section 3</div>
+                <h2>CTC's Existing AI Foundation</h2>
+
+                <h3>MOSaiC: Micro-Occasions in Retail Intelligence</h3>
+                <p>CTC's most strategically significant technology asset — and most underpublicized — is MOSaiC. Built on Microsoft Azure, MOSaiC synthesizes Triangle Rewards loyalty data, internal sales data, and external contextual signals (weather patterns, seasonality, local events, holidays) to identify customer life occasions at scale [8].</p>
+
+                <div class="insight-box">
+                    <h5>MOSaiC Pilot Results (2025)</h5>
+                    <p>During pilot testing, MOSaiC identified more than <strong>1,000 distinct life occasions</strong> where CTC is uniquely positioned to serve customers — from "spring-thaw flooding" to "back-to-school move-ins" to "new fitness routines." Scaling to Canadian Tire, Mark's, and SportChek in 2026. Microsoft providing cloud infrastructure, AI model capabilities, and engineering collaboration.</p>
+                </div>
+
+                <p>In its current form, MOSaiC outputs analytics that inform marketing and merchandising teams. The transformation to agentic commerce means routing MOSaiC's occasion intelligence directly into customer-facing AI agents that <em>act</em> on those insights without human intermediation. The analytical insight becomes an agentic action.</p>
+
+                <h3>Triangle Rewards: The Intelligence Moat</h3>
+                <p>17 million Triangle Rewards members in Canada (population: 40 million) represents extraordinary market penetration. More importantly, it captures <em>cross-banner</em> purchasing behavior — a member's Triangle account knows they shop at Canadian Tire for automotive, SportChek for hockey, and Mark's for workwear. This cross-category view is irreplaceable: no competitor can buy this data or build it quickly.</p>
+
+                <div class="risk-box">
+                    <h5>The Triangle Rewards API Readiness Gap</h5>
+                    <p>Eagle Eye research shows most loyalty programs fail the agentic readiness test: they lack machine-readable rules, sub-second response times, and real-time balance verification [14]. Triangle Rewards must be assessed against these criteria. If offer adjudication currently runs in batch (hours), it must be re-platformed to real-time API (sub-100ms) before agentic deployment. This is the critical path item for every use case in this playbook.</p>
+                </div>
+            </div>
+
+            <!-- Use Cases -->
+            <div id="use-cases" class="section">
+                <div class="section-label">Section 4</div>
+                <h2>Ten Priority Agentic Commerce Use Cases for CTC</h2>
+
+                <div class="uc-grid">
+                    <div class="uc-card near"><div class="uc-num">UC-1 · Near-Term · Highest Priority</div><h4>Occasion-Based Shopping Agent</h4><p>Proactive agent built on MOSaiC that detects life occasions and initiates multi-banner recommendations without customer search. The agentic evolution of MOSaiC's 1,000+ occasion taxonomy into direct customer interaction.</p></div>
+                    <div class="uc-card near"><div class="uc-num">UC-2 · Near-Term · Most Defensible</div><h4>Automotive Proactive Service Agent</h4><p>Tracks vehicle records and service history to proactively initiate tire change reminders, oil changes, and parts recommendations. Unreplicable by Amazon or Walmart — CTC's uniquely defensible agentic capability.</p></div>
+                    <div class="uc-card near"><div class="uc-num">UC-3 · Near-Term</div><h4>Project Planning Agent</h4><p>Step-by-step home improvement and seasonal prep guide (comparable to Lowe's Mylow, deployed to 1,700+ stores). Handles material lists, compatibility, installation steps, and cart building across Canadian Tire hardware.</p></div>
+                    <div class="uc-card near"><div class="uc-num">UC-4 · Near-Term</div><h4>Cross-Banner Occasion Planner</h4><p>Orchestrates a unified shopping experience across multiple CTC banners in a single session. "Getting ready for hockey season" → one cart spanning Canadian Tire, Sport Chek, Mark's, and Pro Hockey Life.</p></div>
+                    <div class="uc-card mid"><div class="uc-num">UC-5 · Mid-Term</div><h4>Triangle Financial Wellness Agent</h4><p>Integrates with Canadian Tire Bank to provide earn optimization, spending insights, and financial guidance — the equivalent of a personal financial advisor for every CT Mastercard holder. Unique to CTC's bank + loyalty combination.</p></div>
+                    <div class="uc-card mid"><div class="uc-num">UC-6 · Mid-Term</div><h4>Professional / Contractor Agent</h4><p>Serves trades workers and small businesses buying workwear (Mark's), tools (Canadian Tire), and bulk supplies — comparable to Lowe's Pro Extended Aisle. Job-site delivery, tool fleet tracking, project budgeting.</p></div>
+                    <div class="uc-card mid"><div class="uc-num">UC-7 · Mid-Term</div><h4>Post-Purchase Engagement Agent</h4><p>Triggered by purchase events — provides setup guides, accessory recommendations, seasonal service reminders, and repair scheduling. Turns a transaction into the start of a long-term relationship.</p></div>
+                    <div class="uc-card mid"><div class="uc-num">UC-8 · Mid-Term</div><h4>In-Store Mobile Assistant</h4><p>Embedded in CTC mobile app for in-store navigation, inventory checking, product comparison, and offer retrieval. Associate-facing version (comparable to Lowe's Mylow Companion across 1,700+ stores).</p></div>
+                    <div class="uc-card long"><div class="uc-num">UC-9 · Long-Term</div><h4>Autonomous Replenishment Agent</h4><p>With standing customer authorization, autonomously reorders consumables (motor oil, automotive fluids, cleaning supplies) when depletion is predicted from purchase history. Full Visa TAP authentication required.</p></div>
+                    <div class="uc-card long"><div class="uc-num">UC-10 · Long-Term</div><h4>External Agent Interface (Protocol Layer)</h4><p>UCP/ACP-compliant endpoints exposing CTC catalog, inventory, and promotions to external agents (ChatGPT, Gemini, Perplexity). CTC products appear in AI-mediated shopping comparisons — the anti-disintermediation investment.</p></div>
+                </div>
+
+                <!-- UC-2 Detail -->
+                <div id="uc2" class="section" style="border-top:1px dashed #e8e8e8; padding-top:24px; margin-top:0; margin-bottom:24px;">
+                    <h3>Deep Dive: UC-2 — The Automotive Proactive Service Agent</h3>
+                    <p>This is CTC's most defensible agentic use case. No AI platform company — not Amazon, not Google, not OpenAI — can book a tire change at a Canadian Tire Auto Centre. CTC's combination of service records + parts inventory + appointment scheduling + loyalty integration creates an agentic experience category that is uniquely CTC's.</p>
+
+                    <div class="code-block"><span class="code-comment"># Automotive agent proactive trigger flow</span>
+
+triggers = {
+    <span class="code-string">"seasonal_tire_change"</span>: <span class="code-comment"># Calendar signal (Mar/Nov) + weather data + last tire install date</span>
+    <span class="code-string">"oil_change_due"</span>: <span class="code-comment"># Mileage interval OR time since last service (>6 months)</span>
+    <span class="code-string">"recall_notice"</span>: <span class="code-comment"># Transport Canada recall DB matched against VIN registry</span>
+    <span class="code-string">"battery_risk"</span>: <span class="code-comment"># Cold weather forecast + battery age from service records</span>
+    <span class="code-string">"wiper_replacement"</span>: <span class="code-comment"># Spring/fall seasonal + date since last wiper purchase</span>
+}
+
+<span class="code-comment"># Example proactive agent message:</span>
+<span class="code-comment"># "Hi [Name], your Honda Civic's oil change is overdue.</span>
+<span class="code-comment">#  The Barrhaven location has Saturday 10 AM available.</span>
+<span class="code-comment">#  Want me to book it and add seasonal wipers? ($89.97, 2,240 points)"</span></div>
+
+                    <p>This experience is the equivalent of a personal mechanic on call — previously only accessible to wealthy customers. Agentic AI democratizes it across all 17 million Triangle Rewards members.</p>
+                </div>
+            </div>
+
+            <!-- Loyalty-Agentic -->
+            <div id="loyalty" class="section">
+                <div class="section-label">Section 5</div>
+                <h2>The Loyalty-Agentic Intersection</h2>
+
+                <p>Eagle Eye's research is direct: <em>"Most loyalty programs aren't ready for AI agents"</em> [14]. The three failure modes — batch segmentation, non-machine-readable rules, slow adjudication — are exactly where Triangle Rewards must be assessed.</p>
+
+                <table>
+                    <tr><th>Capability</th><th>Agentic Requirement</th><th>Triangle Rewards Assessment</th></tr>
+                    <tr><td>Offer adjudication speed</td><td>Sub-100ms API response</td><td>⚠️ Likely batch — requires modernization</td></tr>
+                    <tr><td>Rule format</td><td>Machine-readable (JSON/API), not marketing copy</td><td>⚠️ Likely marketing-format — requires re-structuring</td></tr>
+                    <tr><td>Real-time balance</td><td>Live balance at transaction time</td><td>✅ Likely available via online account</td></tr>
+                    <tr><td>Cross-banner identity</td><td>Single API call across all 5 banners</td><td>⚠️ May require federation layer</td></tr>
+                    <tr><td>External agent readable</td><td>UCP-compatible loyalty rule expression</td><td>❌ Not yet implemented — roadmap item</td></tr>
+                </table>
+
+                <div class="insight-box">
+                    <h5>The Loyalty Moat in Agentic Commerce</h5>
+                    <p>When third-party AI agents mediate purchase decisions, Triangle Rewards becomes the switching cost that survives agent mediation. A customer using ChatGPT to compare circular saws will prefer the retailer where they have Triangle Rewards balance — if the agent surfaces that balance. CTC's goal: make Triangle Rewards the most agent-legible loyalty program in Canada, so any comparison agent surfaces CTC's loyalty value as a meaningful differentiator.</p>
+                </div>
+            </div>
+
+            <!-- Open vs Closed -->
+            <div id="strategy" class="section">
+                <div class="section-label">Section 6</div>
+                <h2>The Open vs. Closed Ecosystem Strategic Choice</h2>
+
+                <p>The most consequential strategic decision for CTC's agentic commerce program is a governance question, not a technology question: how open should CTC be to external AI agents accessing its systems?</p>
+
+                <div class="strategy-grid">
+                    <div class="strategy-card closed">
+                        <div class="s-label">Option A</div>
+                        <h4>Closed Ecosystem</h4>
+                        <p>Proprietary agentic stack only. External agents (ChatGPT, Gemini) cannot access CTC catalog or checkout. All agentic traffic flows through CTC-owned interfaces.</p>
+                        <p>Protects customer relationship and data. Risks invisibility as external agents dominate discovery.</p>
+                        <div class="exemplar">Exemplar: Amazon (Rufus, Alexa+, Shop Direct — fully closed)</div>
+                    </div>
+                    <div class="strategy-card open">
+                        <div class="s-label">Option B</div>
+                        <h4>Open Ecosystem</h4>
+                        <p>UCP/ACP-compliant catalog and checkout. External agents route orders to CTC without restriction. Maximum reach, maximum discoverability.</p>
+                        <p>Grows GMV from external traffic. Risks commoditization if loyalty data is also exposed.</p>
+                        <div class="exemplar">Exemplar: Early Walmart (ChatGPT, Gemini, Perplexity all route to Walmart)</div>
+                    </div>
+                    <div class="strategy-card hybrid">
+                        <div class="s-label">Recommended for CTC</div>
+                        <h4>Layered Hybrid</h4>
+                        <p><strong>Tier 1 — Proprietary:</strong> Triangle Rewards intelligence layer — never exposed to third parties. CTC owns personalization.</p>
+                        <p><strong>Tier 2 — Controlled Open:</strong> UCP/ACP catalog + inventory + pricing for external agent discovery and routing.</p>
+                        <p><strong>Tier 3 — Partner Deep:</strong> Microsoft Copilot + select partners get richer occasion context in exchange for preferential placement.</p>
+                        <div class="exemplar">Captures external reach while protecting the data moat</div>
+                    </div>
+                </div>
+
+                <p>CTC's revenue profile (retail margins, not advertising revenue) aligns with Walmart rather than Amazon. The disintermediation risk — being invisible to ChatGPT/Gemini shopping queries — is greater than the commoditization risk for CTC's specific category footprint. The layered hybrid protects the Triangle Rewards intelligence layer while capturing external agent traffic.</p>
+            </div>
+
+            <!-- Roadmap -->
+            <div id="roadmap" class="section">
+                <div class="section-label">Section 7</div>
+                <h2>Four-Phase Implementation Roadmap</h2>
+
+                <div class="roadmap">
+                    <div class="roadmap-phase">
+                        <div class="roadmap-header p0">
+                            <div>
+                                <div class="roadmap-phase-label">Phase 0 — Foundation</div>
+                                <div class="roadmap-phase-title">Data &amp; Infrastructure Readiness</div>
+                            </div>
+                            <div class="roadmap-phase-timeline">Q2 2026 – Q4 2026</div>
+                        </div>
+                        <div class="roadmap-body">
+                            <p><strong>Objective:</strong> Ensure data, API, and governance infrastructure is agent-ready before deploying any customer-facing agentic capability.</p>
+                            <ul>
+                                <li>Triangle Rewards real-time adjudication API — audit latency, commission modernization if needed (sub-100ms target)</li>
+                                <li>Customer Data Platform enhancement — real-time profile serving (sub-500ms) with consent scoping</li>
+                                <li>MOSaiC API layer — expose occasion intelligence as internal API, not just analytics dashboard</li>
+                                <li>Product catalog agent-readiness audit — completeness of descriptions, compatibility data, attribute coverage</li>
+                                <li>Tool API inventory — for each use case, assess existing API availability and gaps</li>
+                                <li>Responsible AI governance framework — consent management, audit logging, human escalation, price accuracy controls</li>
+                                <li>PIPEDA / Bill C-27 / Quebec Law 25 legal assessment</li>
+                            </ul>
+                            <p style="margin-top:12px; color:#c8102e; font-weight:600;">⚡ Critical: Phase 0 spending should represent 25–30% of total program budget. Most agentic programs fail because data foundations were skipped.</p>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-phase">
+                        <div class="roadmap-header p1">
+                            <div>
+                                <div class="roadmap-phase-label">Phase 1 — First Agents</div>
+                                <div class="roadmap-phase-title">Reactive Conversational Agents</div>
+                            </div>
+                            <div class="roadmap-phase-timeline">Q1 2027 – Q3 2027</div>
+                        </div>
+                        <div class="roadmap-body">
+                            <p><strong>Objective:</strong> Customer-facing LLM agents for high-volume, customer-initiated interactions. Establish baseline metrics. Build organizational AI capability.</p>
+                            <ul>
+                                <li>UC-3: Project Planning Agent (Canadian Tire banner — highest volume, clearest value)</li>
+                                <li>UC-8: In-Store Mobile Assistant (pilot: 20–30 stores; scale after validation)</li>
+                                <li>Reactive occasion agent (customer-initiated version of UC-1)</li>
+                                <li>Architecture: Azure OpenAI GPT-4o + LangGraph + Azure AI Search + Triangle Rewards offer API</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-phase">
+                        <div class="roadmap-header p2">
+                            <div>
+                                <div class="roadmap-phase-label">Phase 2 — Proactive</div>
+                                <div class="roadmap-phase-title">Agent-Initiated Journeys</div>
+                            </div>
+                            <div class="roadmap-phase-timeline">Q4 2027 – Q2 2028</div>
+                        </div>
+                        <div class="roadmap-body">
+                            <p><strong>Objective:</strong> Shift from reactive (customer initiates) to proactive (agent initiates) based on MOSaiC occasion detection and automotive service triggers.</p>
+                            <ul>
+                                <li>UC-2: Automotive Proactive Service Agent — highest-priority, most defensible deployment</li>
+                                <li>UC-1: Full Occasion-Based Shopping Agent — proactive push → agent conversation</li>
+                                <li>UC-7: Post-Purchase Engagement Agent — purchase event triggers</li>
+                                <li>Explicit customer consent / opt-in framework required for all proactive interactions</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-phase">
+                        <div class="roadmap-header p3">
+                            <div>
+                                <div class="roadmap-phase-label">Phase 3 — Autonomous</div>
+                                <div class="roadmap-phase-title">Multi-Step Agentic Workflows</div>
+                            </div>
+                            <div class="roadmap-phase-timeline">Q3 2028 – Q4 2029</div>
+                        </div>
+                        <div class="roadmap-body">
+                            <p><strong>Objective:</strong> Agents autonomously execute multi-step workflows (discover → recommend → offer → checkout) for appropriate use cases with standing customer authorization.</p>
+                            <ul>
+                                <li>UC-9: Autonomous Replenishment Agent (standing authorization, Visa TAP authentication)</li>
+                                <li>UC-5: Triangle Financial Wellness Agent (CT Bank integration)</li>
+                                <li>UC-4: Full Cross-Banner Occasion Planner (unified multi-banner cart orchestration)</li>
+                                <li>Visa Trusted Agent Protocol (TAP) implementation for autonomous checkout authentication</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-phase">
+                        <div class="roadmap-header p4">
+                            <div>
+                                <div class="roadmap-phase-label">Phase 4 — Ecosystem</div>
+                                <div class="roadmap-phase-title">Cross-Banner Orchestration &amp; External Reach</div>
+                            </div>
+                            <div class="roadmap-phase-timeline">2030+</div>
+                        </div>
+                        <div class="roadmap-body">
+                            <p><strong>Objective:</strong> Full cross-banner agentic commerce plus external agent discoverability via UCP/ACP protocol compliance.</p>
+                            <ul>
+                                <li>UC-6: Professional/Contractor Agent at full scale across Mark's + Canadian Tire</li>
+                                <li>UC-10: UCP/ACP compliance — external agents discover and route CTC transactions</li>
+                                <li>Microsoft Copilot and Google Gemini deep partner integrations</li>
+                                <li>Consent-scoped Triangle Rewards API exposure to authorized third-party agents</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vendors -->
+            <div id="vendors" class="section">
+                <div class="section-label">Section 8</div>
+                <h2>Vendor Landscape and Build/Buy/Partner</h2>
+
+                <table>
+                    <tr><th>Component</th><th>Recommendation</th><th>Primary Option</th><th>Rationale</th></tr>
+                    <tr><td>LLM backbone</td><td><strong>Buy</strong></td><td>Azure OpenAI (GPT-4o)</td><td>Not a differentiator; existing Azure partnership; compliance boundary</td></tr>
+                    <tr><td>Occasion intelligence</td><td><strong>Build (existing)</strong></td><td>MOSaiC</td><td>Unique CTC data asset — protect as proprietary</td></tr>
+                    <tr><td>Agent orchestration</td><td><strong>Build on OSS</strong></td><td>AutoGen + LangGraph</td><td>Control required; Microsoft-native via Azure AI Foundry</td></tr>
+                    <tr><td>Product catalog RAG</td><td><strong>Build on Azure</strong></td><td>Azure AI Search</td><td>CTC-specific data; native to infrastructure</td></tr>
+                    <tr><td>Loyalty adjudication</td><td><strong>Modernize or Platform</strong></td><td>Internal API or Eagle Eye AIR</td><td>Modernize Triangle Rewards first; Eagle Eye if internal proves too complex</td></tr>
+                    <tr><td>Commerce platform</td><td><strong>Evaluate</strong></td><td>commercetools or incumbent</td><td>Long-term agentic architecture decision; UCP-native needed</td></tr>
+                    <tr><td>In-store assistant</td><td><strong>Build (OpenAI model)</strong></td><td>Azure OpenAI + LangGraph</td><td>Lowe's Mylow proved model at 1,700+ stores</td></tr>
+                    <tr><td>External protocols</td><td><strong>Implement standards</strong></td><td>UCP / ACP / Visa TAP</td><td>Standards adoption, not build</td></tr>
+                    <tr><td>Customer service AI</td><td><strong>Evaluate platform</strong></td><td>Agentforce (Salesforce)</td><td>12,000+ implementations; fast time-to-value; assess lock-in risk</td></tr>
+                </table>
+            </div>
+
+            <!-- Risk -->
+            <div id="risk" class="section">
+                <div class="section-label">Section 9</div>
+                <h2>Risk, Governance, and Canadian Regulatory Context</h2>
+
+                <div class="risk-box">
+                    <h5>Technical Risk: Hallucination in Safety-Critical Recommendations</h5>
+                    <p>An agent that confidently recommends an incompatible part (wrong brake pads for a vehicle model) creates customer safety risk and legal liability. Mitigation: strict retrieval-grounded responses only, compatibility validation APIs, and mandatory "please verify with an associate" disclaimers for safety-critical automotive parts.</p>
+                </div>
+
+                <div class="risk-box">
+                    <h5>Competition Act Exposure: Price Display and AI-Generated Promotions</h5>
+                    <p>Canada's Competition Act Section 52 prohibits representations that are false or misleading in a material respect — courts assess the "general impression" conveyed, not literal wording. An agent stating a stale-cached price, expired promotion, or hallucinated discount creates a potential Competition Act violation. Penalties: <strong>up to $10M or 3% of worldwide gross revenue</strong>. AI hallucinations in e-commerce cost businesses an estimated $67.4 billion globally in 2024. Mitigation: all prices must come from real-time pricing APIs; never from model memory; mandatory price verification before any agent-initiated transaction; full audit logs of every price quoted by an agent. [43][44]</p>
+                </div>
+
+                <div class="risk-box">
+                    <h5>Regulatory Status: PIPEDA (in force), Bill C-27/AIDA (dead), Quebec Law 25 (in force)</h5>
+                    <p><strong>Critical correction:</strong> Bill C-27/AIDA died on the order paper in January 2025 when Parliament was prorogued ahead of the April 2025 federal election. Canada remains governed by PIPEDA. However, the OPC has confirmed that PIPEDA's accountability and consent principles apply to agentic AI today. Quebec Law 25 (in force) requires explicit consent for automated profiling for all CTC's significant Quebec operations. CTC should design to the CPPA/AIDA standard regardless — it represents the direction of future legislation and represents best practice for PIPEDA compliance now. [45]</p>
+                </div>
+
+                <div class="risk-box">
+                    <h5>Gartner Warning: 40%+ of Agentic AI Projects Will Be Cancelled by 2027</h5>
+                    <p>Gartner projects that more than 40% of agentic AI projects will be cancelled by 2027 due to inadequate risk controls. 80% of organizations have already encountered risky behavior from AI agents; 95% of executives experienced negative consequences from enterprise AI. The organizational readiness and governance dimension — not the technology — is the primary failure mode. CTC must invest in AI governance infrastructure at the same level as technology investment.</p>
+                </div>
+
+                <div class="risk-box">
+                    <h5>The Klarna Warning: Don't Over-Automate</h5>
+                    <p>Klarna's AI assistant (celebrated as 700 FTE equivalent) reversed course in 2025 and reinstated human agents because customers needed the human option. CTC must design hybrid escalation from day one. Human agents receiving full agent-conversation context — not a reset — are the design requirement.</p>
+                </div>
+            </div>
+
+            <!-- Synthesis -->
+            <div id="synthesis" class="section">
+                <div class="section-label">Synthesis</div>
+                <h2>Five Strategic Imperatives for CTC</h2>
+
+                <div class="bp-box">
+                    <h4>The Five Imperatives</h4>
+                    <ul>
+                        <li><strong>Evolve MOSaiC from analytics platform to agentic engine.</strong> The 1,000+ occasions already identified are raw material for proactive agentic commerce. The transformation — connecting MOSaiC's output to customer-facing agent actions without human intermediation — is the highest-leverage technical project CTC can undertake in 2026.</li>
+                        <li><strong>Triangle Rewards must be API-first and machine-readable by 2027.</strong> In the agentic era, loyalty programs that cannot be queried at sub-100ms latency are bypassed. Triangle's 17 million members are CTC's largest asset — but only if the platform is ready for agent-mediated commerce.</li>
+                        <li><strong>The Automotive Service Agent is CTC's most defensible agentic differentiator.</strong> No AI platform can book a tire change at a Canadian Tire Auto Centre. Build this first, build it best. It is the use case that proves agentic commerce's value, creates habit, and is impossible for Amazon or Walmart to replicate.</li>
+                        <li><strong>Adopt the Walmart playbook, not the Amazon playbook.</strong> CTC's revenue profile favors openness to external agent protocols. Implement UCP/ACP compliance to prevent disintermediation. Keep the Triangle Rewards intelligence layer proprietary. The product catalog, inventory, and basic checkout become machine-readable.</li>
+                        <li><strong>Build governance before agents.</strong> Canadian regulatory risk (PIPEDA, Law 25, forthcoming AIDA) and customer trust require consent architecture, human escalation paths, auditability, and bias monitoring from Phase 0. The cost of retrofitting compliance is vastly higher than building it in.</li>
+                    </ul>
+                </div>
+
+                <h3>The Compounding Advantage</h3>
+                <p>CTC's strategic position improves as agentic commerce matures. In Phase 1, any retailer with a good chatbot competes on roughly equal footing. By Phase 3, retailers with the richest first-party data, the most complete customer profiles, and the most occasion-aware intelligence layers are the structural winners. Triangle Rewards + MOSaiC + Canadian Tire Bank create a compounding flywheel that is very difficult to replicate after the fact. The imperative is to get started.</p>
+            </div>
+
+            <!-- Recommendations -->
+            <div id="recs" class="section">
+                <div class="section-label">Recommendations</div>
+                <h2>Priority Actions by Audience</h2>
+
+                <div class="rec-grid">
+                    <div class="rec-card">
+                        <h4>For CTC C-Suite</h4>
+                        <ol>
+                            <li>Declare agentic commerce a board-level strategic priority — McKinsey's $3-5T and Cyber Week 2025 data establish this as revenue-scale, not experiment-scale</li>
+                            <li>Fund Phase 0 (data foundation) as a capital project in 2026 — Triangle Rewards API and MOSaiC API layer are prerequisites for everything else</li>
+                            <li>Establish cross-functional Agentic Commerce governance function before first public agent deployment</li>
+                        </ol>
+                    </div>
+                    <div class="rec-card">
+                        <h4>For Digital/Tech Leadership</h4>
+                        <ol>
+                            <li>Begin Triangle Rewards real-time API assessment immediately — determine adjudication latency and investment required for sub-100ms response</li>
+                            <li>Architect MOSaiC as an internal API service consumable by agent orchestration — not just an analytics dashboard</li>
+                            <li>Pilot UC-2 (Automotive Service Agent) as the first agentic deployment — clearest value proposition, most defensible category, defined trigger/action loop</li>
+                            <li>Evaluate Azure AI Foundry + LangGraph as primary orchestration stack given existing Microsoft partnership</li>
+                        </ol>
+                    </div>
+                    <div class="rec-card">
+                        <h4>For Consulting Strategist</h4>
+                        <ol>
+                            <li>Frame Triangle Rewards modernization as the critical path — it unlocks every other use case and should be the first workstream to scope and fund</li>
+                            <li>Use the Walmart/Amazon open-vs-closed framework to facilitate the ecosystem strategy conversation — it makes the strategic choice concrete</li>
+                            <li>Quantify the disintermediation risk to create urgency: if X% of Canadian consumers use AI agents for shopping discovery by 2028 and CTC isn't UCP-compliant, what is the revenue at risk?</li>
+                            <li>Recommend a phased delivery model with a customer-facing agent in production by Q3 2027 — creating organizational momentum and real-world learning</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bibliography -->
+            <div id="bibliography" class="section">
+                <div class="section-label">Bibliography</div>
+                <h2>Sources</h2>
+                <ul class="bib-list">
+                    <li><span class="ref-num">[1]</span> McKinsey. "The Agentic Commerce Opportunity." October 2025. <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-automation-curve-in-agentic-commerce" target="_blank">mckinsey.com</a></li>
+                    <li><span class="ref-num">[2]</span> BCG. "Agentic Commerce is Redefining Retail: How to Respond." 2025. <a href="https://www.bcg.com/publications/2025/agentic-commerce-redefining-retail-how-to-respond" target="_blank">bcg.com</a></li>
+                    <li><span class="ref-num">[3]</span> Sanbi AI. "Agentic Commerce Market Report 2026." <a href="https://sanbi.ai/blog/agentic-shopping-market-trends" target="_blank">sanbi.ai</a></li>
+                    <li><span class="ref-num">[4]</span> Walmart Corporate. "Inside Walmart's Strategy for Building an Agentic Future." May 2025. <a href="https://corporate.walmart.com/news/2025/05/29/inside-walmarts-strategy-for-building-an-agentic-future" target="_blank">corporate.walmart.com</a></li>
+                    <li><span class="ref-num">[5]</span> CX Dive. "How Amazon, Target and Walmart Are Approaching AI in Customer Experience." <a href="https://www.customerexperiencedive.com/news/amazon-target-walmart-future-of-ai/806225/" target="_blank">customerexperiencedive.com</a></li>
+                    <li><span class="ref-num">[6]</span> Deloitte. "Agentic Commerce: AI Shopping Agents Guide 2025." <a href="https://www.deloitte.com/us/en/Industries/consumer/articles/agentic-commerce-ai-shopping-agents-guide.html" target="_blank">deloitte.com</a></li>
+                    <li><span class="ref-num">[7]</span> Bain &amp; Company. "Agentic AI in Retail: How Autonomous Shopping Is Redefining the Customer Journey." <a href="https://www.bain.com/insights/agentic-ai-in-retail-how-autonomous-shopping-redefining-customer-journey/" target="_blank">bain.com</a></li>
+                    <li><span class="ref-num">[8]</span> Canadian Tire Corporation. "CTC Expands Microsoft Collaboration in Building Next-Generation Retail Intelligence Platform." February 2026. <a href="https://corp.canadiantire.ca/English/media/news-releases/press-release-details/2026/Canadian-Tire-Corporation-expands-Microsoft-collaboration-in-building-next-generation-retail-intelligence-platform/default.aspx" target="_blank">corp.canadiantire.ca</a></li>
+                    <li><span class="ref-num">[9]</span> Lowe's Corporate. "Lowe's Launches First AI-Powered Home Improvement Virtual Advisor." March 2025. <a href="https://corporate.lowes.com/newsroom/press-releases/lowes-launches-first-ai-powered-home-improvement-virtual-advisor-03-05-25" target="_blank">corporate.lowes.com</a></li>
+                    <li><span class="ref-num">[10]</span> Google Cloud Blog. "Agentic Commerce is Here: How Retailers Can Prepare." <a href="https://cloud.google.com/transform/agentic-commerce-retailers-can-prepare-for-the-new-shopping-era-ai" target="_blank">cloud.google.com</a></li>
+                    <li><span class="ref-num">[11]</span> IBM. "What is Agentic RAG?" <a href="https://www.ibm.com/think/topics/agentic-rag" target="_blank">ibm.com</a></li>
+                    <li><span class="ref-num">[12]</span> Visa. "Visa Introduces Trusted Agent Protocol." October 2025. <a href="https://developer.visa.com/capabilities/trusted-agent-protocol/overview" target="_blank">developer.visa.com</a></li>
+                    <li><span class="ref-num">[13]</span> SuperAGI. "Omnichannel Customer Experiences in 2025." <a href="https://superagi.com/omnichannel-customer-experiences-in-2025-how-ai-is-transforming-cross-channel-consistency/" target="_blank">superagi.com</a></li>
+                    <li><span class="ref-num">[14]</span> Eagle Eye. "Most Loyalty Programs Aren't Ready for AI Agents." <a href="https://eagleeye.com/blog/loyalty-programs-arent-ready-for-ai-agents" target="_blank">eagleeye.com</a></li>
+                    <li><span class="ref-num">[15]</span> Microsoft Retail Blog. "Why Agentic Commerce Is the New Front Door to Retail." Feb 2026. <a href="https://www.microsoft.com/en-us/industry/blog/retail/2026/02/09/how-agentic-commerce-is-becoming-the-new-front-door-to-retail/" target="_blank">microsoft.com</a></li>
+                    <li><span class="ref-num">[16]</span> Bain. "Agentic AI Commerce: The Next Retail Revolution Is Here." <a href="https://www.bain.com/insights/agentic-ai-commerce-the-next-retail-revolution-is-here/" target="_blank">bain.com</a></li>
+                    <li><span class="ref-num">[17]</span> commercetools. "7 AI Trends Shaping Agentic Commerce in 2026." <a href="https://commercetools.com/blog/ai-trends-shaping-agentic-commerce" target="_blank">commercetools.com</a></li>
+                    <li><span class="ref-num">[18]</span> Dunnhumby. "Agentic Commerce: How to Win and Retain Customer Loyalty." <a href="https://www.dunnhumby.com/resources/blog/loyalty-personalisation/en/agentic-commerce-how-to-win-and-retain-customer-loyalty/" target="_blank">dunnhumby.com</a></li>
+                    <li><span class="ref-num">[19]</span> Canadian Tire Corporation. "True North Transformation Strategy." March 2025. <a href="https://www.newswire.ca/news-releases/canadian-tire-corporation-launches-true-north-transformative-growth-strategy" target="_blank">newswire.ca</a></li>
+                    <li><span class="ref-num">[20]</span> EY. "Canadian Tire Unleashes the Potential of Customer Data." <a href="https://www.ey.com/en_us/insights/consulting/how-canadian-tire-leveraged-the-potential-of-customer-data-with-ai" target="_blank">ey.com</a></li>
+                    <li><span class="ref-num">[21]</span> DataCamp. "CrewAI vs LangGraph vs AutoGen." <a href="https://www.datacamp.com/tutorial/crewai-vs-langgraph-vs-autogen" target="_blank">datacamp.com</a></li>
+                    <li><span class="ref-num">[22]</span> Lowe's Corporate. "Lowe's Deploys First At-Scale AI Assistant for Retail Associates." May 2025. <a href="https://corporate.lowes.com/newsroom/press-releases/lowes-deploys-first-scale-ai-assistant-retail-associates-05-05-25" target="_blank">corporate.lowes.com</a></li>
+                    <li><span class="ref-num">[23]</span> CX Dive. "Lowe's CEO Credits AI for 'Dramatic Improvements in Customer Service'." <a href="https://www.customerexperiencedive.com/news/lowes-ceo-ai-dramatic-improvements-customer-service/813124/" target="_blank">customerexperiencedive.com</a></li>
+                    <li><span class="ref-num">[24]</span> PYMNTS. "Lowe's and Home Depot Tap AI to Capture DIY Spend." <a href="https://www.pymnts.com/news/retail/2025/lowes-home-depot-tap-ai-to-capture-renovation-spend-at-planning-stage/" target="_blank">pymnts.com</a></li>
+                    <li><span class="ref-num">[25]</span> Digital Commerce 360. "McKinsey Forecasts Up to $5 Trillion in Agentic Commerce." October 2025. <a href="https://www.digitalcommerce360.com/2025/10/20/mckinsey-forecast-5-trillion-agentic-commerce-sales-2030/" target="_blank">digitalcommerce360.com</a></li>
+                    <li><span class="ref-num">[26]</span> Voucherify. "AI Agents Are Now Loyalty Members: What UCP Means for Incentives." <a href="https://www.voucherify.io/blog/ai-agents-are-now-loyalty-members-what-ucp-means-for-incentives" target="_blank">voucherify.io</a></li>
+                    <li><span class="ref-num">[27]</span> SAP News. "Agentic AI Shapes the Future of Loyalty in Retail." December 2025. <a href="https://news.sap.com/2025/12/agentic-ai-retail-holiday-shopping-2025/" target="_blank">news.sap.com</a></li>
+                    <li><span class="ref-num">[28]</span> Retail-Insider. "Canadian Tire Expands Microsoft Partnership." February 2026. <a href="https://retail-insider.com/retail-insider/2026/02/canadian-tire-expands-microsoft-partnership-to-scale-ai-driven-retail-intelligence-platform/" target="_blank">retail-insider.com</a></li>
+                    <li><span class="ref-num">[29]</span> Microsoft Source. "Microsoft Propels Retail Forward with Agentic AI." January 2026. <a href="https://news.microsoft.com/source/2026/01/08/microsoft-propels-retail-forward-with-agentic-ai-capabilities-that-power-intelligent-automation-for-every-retail-function/" target="_blank">news.microsoft.com</a></li>
+                    <li><span class="ref-num">[30]</span> Concentrix. "Top 5 Agentic AI Use Cases in Automotive Industry." <a href="https://www.concentrix.com/insights/blog/top-5-agentic-ai-use-cases-in-automotive-industry/" target="_blank">concentrix.com</a></li>
+                    <li><span class="ref-num">[31]</span> ZenML. "Agentic RAG Implementation for Retail Personalization." <a href="https://www.zenml.io/llmops-database/agentic-rag-implementation-for-retail-personalization-and-customer-support" target="_blank">zenml.io</a></li>
+                    <li><span class="ref-num">[32]</span> Adobe Digital Commerce 360. "Adobe Commits Commerce Platform to Agentic Standards." February 2026. <a href="https://www.digitalcommerce360.com/2026/02/23/adobe-commerce-platform-agentic-ai-standards/" target="_blank">digitalcommerce360.com</a></li>
+                    <li><span class="ref-num">[33]</span> Walmart Corporate. "Retail Rewired Report 2025: Agentic AI at the Heart of Retail Transformation." <a href="https://corporate.walmart.com/news/2025/06/04/walmarts-retail-rewired-report-2025-agentic-ai-at-the-heart-of-retail-transformation" target="_blank">corporate.walmart.com</a></li>
+                    <li><span class="ref-num">[34]</span> Visa. "Visa and Partners Complete Secure AI Transactions." <a href="https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-partners-complete-secure-agentic-transactions.html" target="_blank">corporate.visa.com</a></li>
+                    <li><span class="ref-num">[35]</span> Eagle Eye. "AI-Driven Loyalty &amp; Promotions at Scale." <a href="https://eagleeye.com/" target="_blank">eagleeye.com</a></li>
+                    <li><span class="ref-num">[36]</span> Windows Forum. "Canadian Tire MOSaiC: Azure AI for Micro Occasions in Retail Intelligence." <a href="https://windowsforum.com/threads/canadian-tire-mosaic-azure-ai-for-micro-occasions-in-retail-intelligence.402376/" target="_blank">windowsforum.com</a></li>
+                    <li><span class="ref-num">[37]</span> Lowe's Corporate. "Lowe's Deploys First At-Scale AI Assistant for Retail Associates." May 2025. <a href="https://corporate.lowes.com/newsroom/press-releases/lowes-deploys-first-scale-ai-assistant-retail-associates-05-05-25" target="_blank">corporate.lowes.com</a></li>
+                    <li><span class="ref-num">[38]</span> Omnisend / Retail-Insider. "74% of Canadians Okay with AI Completing Online Purchases." March 2026. <a href="https://retail-insider.com/retail-insider/2026/03/omnisend-study-74-of-canadians-okay-with-ai-completing-online-purchases/" target="_blank">retail-insider.com</a></li>
+                    <li><span class="ref-num">[39]</span> Loblaw Companies. "Loblaw Advances AI in Canadian Retail with First-of-Its-Kind Shopping App in ChatGPT." February 2026. <a href="https://www.loblaw.ca/en/loblaw-advances-ai-in-canadian-retail-with-first-of-its-kind-shopping-app-in-chatgpt/" target="_blank">loblaw.ca</a></li>
+                    <li><span class="ref-num">[40]</span> Retail-Insider. "Loblaw Expands AI Commerce with Google Gemini." February 2026. <a href="https://retail-insider.com/retail-insider/2026/02/loblaw-expands-ai-commerce-with-google-gemini/" target="_blank">retail-insider.com</a></li>
+                    <li><span class="ref-num">[41]</span> Supply Chain Dive. "4 Walmart Supply Chain AI Uses." 2025. <a href="https://www.supplychaindive.com/news/4-walmart-supply-chain-ai-uses/760891/" target="_blank">supplychaindive.com</a></li>
+                    <li><span class="ref-num">[42]</span> Amazon Science. "The Technology Behind Amazon's GenAI-Powered Shopping Assistant Rufus." <a href="https://www.amazon.science/blog/the-technology-behind-amazons-genai-powered-shopping-assistant-rufus" target="_blank">amazon.science</a></li>
+                    <li><span class="ref-num">[43]</span> Competition Bureau Canada. "False or Misleading Representations and Deceptive Marketing Practices." <a href="https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/false-or-misleading-representations-and-deceptive-marketing-practices" target="_blank">competition-bureau.canada.ca</a></li>
+                    <li><span class="ref-num">[44]</span> Alhena AI. "The Accuracy Imperative: Hallucination-Free AI for E-commerce." <a href="https://alhena.ai/blog/accuracy-imperative-hallucination-free-ai-ecommerce/" target="_blank">alhena.ai</a></li>
+                    <li><span class="ref-num">[45]</span> BizTech Magazine. "AI Agents, Data Governance, and Workforce Shifts Redefine Retail 2026." December 2025. <a href="https://biztechmagazine.com/article/2025/12/ai-agents-data-governance-and-workforce-shifts-redefine-retail-2026" target="_blank">biztechmagazine.com</a></li>
+                </ul>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="footer">
+        <span>Agentic Commerce for Canadian Tire Corporation · March 2026 · UltraDeep Research</span>
+        <span>Claude Code Deep Research · 45+ sources · UltraDeep mode · Updated with background agent findings</span>
+    </div>
+
+</div>
+</body>
+</html>
