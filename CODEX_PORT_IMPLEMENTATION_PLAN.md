@@ -1,10 +1,33 @@
 # Codex Port Implementation Plan
 
-## 1. Executive summary
+> **Architectural correction (2026-04-04):** Sections 1–5 of this document reflect
+> a plan based on an incorrect diagnosis. The forensic audit identified
+> `execute_phase()` returning `{status: "instructions_displayed"}` as a failure.
+> That is not a failure — it is the correct pattern for a Codex skill. The Python
+> script is a **tool the LLM calls**, not the executor. The LLM is the orchestrator.
+> Rewriting `research_engine.py` to autonomously call LLM APIs and manage a
+> continuation loop would create a split-brain system (Python and LLM both trying to
+> orchestrate) and strip the LLM of the cross-phase context it needs to produce
+> coherent long-form output. **The correct fix is to make the LLM's instructions
+> more explicit and demanding — not to replace the LLM with Python.**
+>
+> The corrected plan is: harden `SKILL.md` with explicit thresholds and protocols
+> (Package 1), align reference docs to enforce LLM-driven section discipline
+> (Package 2), strengthen validator JSON feedback so the LLM can self-correct
+> (Package 3), then harden the HTML tooling (Package 4). `research_engine.py` keeps
+> its current role as a prompt scaffolder and state manager. No Python continuation
+> runner or autonomous phase executor should be built.
+>
+> See `MIGRATION_NOTES.md` (2026-04-04) and `CODEX_PORT_TODO.md` for the corrected
+> package list.
+
+---
+
+## 1. Executive summary (original — read with correction above)
 - The current repo has strong documentation and validators, but the runtime path is still scaffold-heavy: `research_engine.py` does not execute a real multi-pass generation loop that can reliably produce benchmark-scale reports.
-- The minimum honest fix is to implement an executable orchestration loop with persisted continuation state, section-by-section assembly, and hard mode gates before packaging.
-- The first implementation should prioritize deterministic markdown generation + strict gating + validation/HTML blocking logic, then harden evidence normalization and renderer robustness in iteration 2.
-- Documentation-only features (continuation, deep-length behavior, assembly loops) must be converted into code paths and testable artifacts.
+- ~~The minimum honest fix is to implement an executable orchestration loop with persisted continuation state, section-by-section assembly, and hard mode gates before packaging.~~ **Corrected:** The minimum honest fix is to surface mode thresholds and section minima explicitly in SKILL.md and tighten the reference docs so the LLM follows a strict section-by-section protocol.
+- The first implementation should prioritize ~~deterministic markdown generation~~ **explicit LLM instruction quality** + strict gating + validation/HTML blocking logic, then harden evidence normalization and renderer robustness in iteration 2.
+- ~~Documentation-only features (continuation, deep-length behavior, assembly loops) must be converted into code paths and testable artifacts.~~ **Corrected:** These features must be converted into explicit, prescriptive LLM instructions — not Python code paths. The LLM executes them; Python only validates and supports.
 
 ## 2. Engineering requirements
 
@@ -89,25 +112,30 @@ Engine behavior:
 
 ## 4. Minimum Viable Real Port
 
-The smallest set that makes this repo honestly functional in Codex:
+> **Architectural correction (2026-04-04):** The original "must build now" list
+> assumed Python should execute phases and manage continuation. That is wrong. See
+> the correction note at the top of this document. The corrected MVP is below.
 
-### Must build now
-1. Replace scaffold behavior in `scripts/research_engine.py` with executable section-assembly orchestration.
-2. Add continuation state machine persisted to disk (resume + cycle limits).
-3. Add hard mode gates (length + required sections + citations/bibliography) used at runtime, not docs.
-4. Block HTML generation until markdown validation + citation checks pass.
-5. Emit deterministic artifacts (`report.md`, `sources.json`, `continuation_state.json`, validation manifest).
+The smallest set that makes this repo honestly produce benchmark-quality output:
+
+### Must build now (corrected)
+1. Surface all mode thresholds and section minima from `scripts/contracts.py` directly into `SKILL.md` as hard requirements visible to the LLM at run start.
+2. Add explicit numbered section-by-section assembly protocol to `SKILL.md` and `reference/report-assembly.md`.
+3. Rewrite `reference/continuation.md` as a prescriptive, numbered LLM instruction sequence (not pseudocode or narrative).
+4. Add `--json-out` to validator scripts so they emit structured, machine-readable feedback the LLM can read and act on.
+5. Block HTML generation until markdown + citation validators pass (enforced by updated SKILL.md workflow steps).
 
 ### Can remain simplified in MVP
-- Retrieval depth can still use a basic source normalization abstraction (no advanced multi-provider adapter required in first pass).
+- `research_engine.py` keeps its current role: print structured phase prompts, save state stubs. No autonomous LLM calls needed.
+- Retrieval depth can remain a basic source normalization abstraction.
 - Critique/refine loops can be single-iteration by default for standard mode.
 - HTML style can remain current template so long as section parity and bibliography fidelity are enforced.
 
-### Cannot remain doc-only
-- Continuation protocol.
-- Per-mode completion thresholds.
-- Section assembly loop.
-- Packaging/validation gating policy.
+### Cannot remain doc-only (corrected framing)
+- Mode thresholds must appear in SKILL.md (not just contracts.py) — the LLM must see them.
+- Section assembly must be a numbered mandatory protocol the LLM follows, not background guidance.
+- Continuation criteria must be explicit and tied to contracts.py thresholds.
+- Packaging gating must be enforced by SKILL.md workflow steps, not Python control flow.
 
 ## 5. File-by-file plan
 

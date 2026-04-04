@@ -214,6 +214,111 @@ Addressed review feedback by restoring `CODEX_PORT_IMPLEMENTATION_PLAN.md` to it
 1. Confirm canonical filename preference for the execution checklist (`CODEX_PORT_TODO.md` vs `IMPLEMENTATION_TODO.md`).
 2. Confirm whether completion tracking should occur only in-repo or be mirrored in external project tooling.
 
+## 2026-04-04 - Architectural correction: execution model misdiagnosis
+
+### Summary
+
+The forensic audit (`FORENSIC_AUDIT_2026-04-03.md`) and subsequent implementation
+plan (`CODEX_PORT_IMPLEMENTATION_PLAN.md`) were based on a fundamental
+misunderstanding of how Codex skills execute. The entire Package 1 and Package 2
+scope was built on a wrong premise and has been corrected.
+
+### The misdiagnosis
+
+The forensic audit identified `execute_phase()` returning
+`{status: "instructions_displayed"}` as the **first point of failure**, concluding
+that the engine "does not execute retrieval/synthesis or write markdown." It proposed
+rewriting `research_engine.py` into an autonomous executor that calls LLM APIs,
+manages a continuation state machine, and assembles sections programmatically.
+
+This is wrong.
+
+### Why it is wrong
+
+In a Codex (or Claude Code) skill, the Python script is a **tool the LLM calls**.
+The LLM is the orchestrator. `execute_phase()` printing phase instructions IS the
+correct pattern: the script structures the prompts, the LLM reads them and does the
+work using its native tools (web search, file writes, bash).
+
+Making Python autonomous would:
+1. Create a split-brain system — Python and the LLM both trying to orchestrate the
+   same workflow with no clean authority boundary
+2. Strip the LLM of cross-phase context it needs for coherent long-form output
+3. Re-introduce provider coupling (Python calling LLM APIs directly)
+4. Rebuild an agent framework that Codex already provides
+
+### The real cause of the quality gap
+
+The actual reason Codex produces ~4K words instead of 11K+ is that `SKILL.md` does
+not give Codex explicit, hard requirements:
+- Word targets for deep/ultradeep are in `scripts/contracts.py` — a file Codex does
+  not read unless it explicitly fetches it
+- Section minima live in Python code, not in the instructions Codex sees at run start
+- Continuation is in `reference/continuation.md`, loaded lazily, with no hard signal
+  that it is mandatory for deep/ultradeep runs
+- Quality standards use soft preference language ("preferred", "recommended")
+  instead of hard requirements
+
+### Why Codex made the wrong diagnosis
+
+The forensic audit was performed by a Codex session asked to find why output was
+short. Several factors compounded into the wrong conclusion:
+
+1. **Reasoned from code, not from architecture.** The script shows a function that
+   doesn't produce output — from a conventional software perspective, that is a bug.
+   The auditor didn't have access to the meta-level context that the LLM is the
+   executor, not the script.
+
+2. **Did not recognize its own execution model.** The LLM analyzed a skill designed
+   to run inside an LLM agent without recognizing itself as the executor. It
+   examined the code as if it were an external system, reaching the conclusion that
+   "the engine doesn't run" — which is literally true of the Python, but misses that
+   the engine IS the LLM.
+
+3. **The comment was too subtle.** The code comment "In real usage, the agent
+   executes these instructions" is easy to dismiss. The skill architecture was not
+   explicitly documented anywhere in the repo, so the auditor had no authoritative
+   source to consult.
+
+4. **The prompt framed it as a code audit.** "Why does the engine produce short
+   output?" naturally leads to "because the engine doesn't execute." The question
+   didn't ask "is the skill execution pattern correct?" so the auditor didn't question
+   it.
+
+5. **The diagnosis fit the evidence.** State files with `"report": ""`, fabricated
+   file paths, no real content written — these are real observations that look like
+   failure symptoms. The causal inference was wrong, but the observations were
+   accurate.
+
+6. **Confirmation bias from the audit framing.** The forensic audit was specifically
+   tasked with finding failure points. Finding "the executor doesn't execute" is a
+   compelling answer. The auditor stopped there rather than asking whether a
+   non-executing Python script might be intentional.
+
+### Decisions recorded
+
+- `research_engine.py` retains its current role as a prompt scaffolding helper and
+  state manager. No autonomous LLM calls, no phase execution logic.
+- Continuation and section assembly are enforced through LLM instruction quality
+  (SKILL.md + reference docs), not Python control flow.
+- `scripts/contracts.py` thresholds must be surfaced in `SKILL.md` directly so the
+  LLM sees them at run start without requiring a fetch.
+- `scripts/assemble_report.py` may be added as a pure file compositor (reads
+  LLM-written section fragments, assembles report.md) — no content generation.
+- No `continuation_runner.py` should be built.
+
+### Updated package plan
+
+See `CODEX_PORT_TODO.md` for the revised package list. The corrected order is:
+1. Package 0 ✓
+2. Package 1: SKILL.md contract hardening
+3. Package 2: Reference doc alignment (LLM-driven discipline)
+4. Package 3: Validator JSON outputs and gate runner
+5. Package 4: HTML hardening
+6. Package 5–7: Tests, docs, smoke
+
+---
+
 ## 2026-04-03 - Package 0 implementation (contracts + finalization policy)
 
 ### What was implemented

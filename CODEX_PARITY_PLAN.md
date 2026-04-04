@@ -250,24 +250,33 @@ Deliverables:
 - `scripts/check_evidence_trace.py`
 - updated validation docs
 
-### Workstream C: Progressive Assembly Orchestrator
+### Workstream C: Progressive Assembly Discipline
+
+> **Architectural correction (2026-04-04):** The original Workstream C proposed
+> improving `research_engine.py` to manage section state programmatically. This was
+> wrong. Section assembly discipline must be enforced through explicit LLM
+> instructions, not Python control flow. The Python script is a tool; the LLM is the
+> orchestrator that decides when a section is complete and when to continue.
 
 Goal:
-Recreate the section-by-section discipline that Claude appears to follow.
+Recreate the section-by-section discipline that Claude appears to follow, by making
+the LLM's instructions explicit and mandatory rather than adding a Python wrapper.
 
 Required changes:
-- improve `report-assembly.md`
-- improve `research_engine.py` so it manages section state better
-- add section generation sequence metadata
-- add narrative carry-forward fields
-- add per-section completeness checks
+- Rewrite `reference/report-assembly.md` as a numbered mandatory protocol with
+  per-section word targets derived from `scripts/contracts.py`.
+- Rewrite `reference/continuation.md` as a prescriptive LLM instruction sequence,
+  not pseudocode or narrative prose.
+- Update `SKILL.md` to explicitly require loading and following the assembly
+  protocol for deep/ultradeep runs — not lazy-load as optional background material.
+- Add `scripts/assemble_report.py` as a pure file compositor (reads LLM-written
+  section files, assembles `report.md`) — not a content generator.
 
-Required behaviors:
-- section intent
-- section evidence pack
-- section draft
-- section critique
-- append only when section passes checks
+Required behaviors (enforced through instructions, not Python):
+- LLM drafts sections one at a time with explicit word-count self-check after each
+- LLM does not proceed to the next section until current section meets minimum
+- LLM loads continuation protocol at deep/ultradeep run start, not on failure
+- Append-only composition: section files persist; compositor assembles final report
 
 ### Workstream D: Benchmark-Grade HTML Renderer
 
@@ -337,46 +346,51 @@ This section maps current Codex behavior against what the benchmark demonstrates
 
 ## 6. Implementation Order
 
-The work should be sequenced to maximize practical improvement quickly.
+> **Architectural correction (2026-04-04):** Original Phase 4 proposed improving
+> `research_engine.py` for assembly. Corrected: assembly discipline is enforced
+> through LLM instructions, not Python. Phase order revised below.
 
-### Phase 1: Artifact quality contract
-
-Update:
-- `SKILL.md`
-- `reference/report-assembly.md`
-- `reference/quality-gates.md`
-
-Goal:
-- make deep/ultradeep outputs behave like consulting artifacts
-
-### Phase 2: Renderer rebuild
+### Phase 1: SKILL.md instruction hardening (highest leverage, do first)
 
 Update:
-- `scripts/md_to_html.py`
-- `templates/mckinsey_report_template.html`
-- possibly add semantic partial templates
+- `SKILL.md` — surface mode thresholds, section minima, citation targets as hard
+  requirements; add mandatory section-by-section assembly protocol
+- `reference/report-assembly.md` — numbered mandatory protocol, thresholds from contracts.py
+- `reference/continuation.md` — prescriptive LLM instruction sequence
 
 Goal:
-- close the most visible quality gap fast
+- make Codex output behave like consulting artifacts by giving it explicit,
+  demanding instructions rather than soft preferences
 
-### Phase 3: Evidence system
+### Phase 2: Validator feedback quality
+
+Update:
+- `scripts/validate_report.py` — `--json-out`, mode-aware thresholds as hard gates
+- `scripts/verify_citations.py` — `--json-out`, structured failure reasons
+- `scripts/verify_html.py` — `--json-out`, section and citation parity checks
+- Add `scripts/run_validation_gate.py` — unified gate runner for LLM self-correction
+
+Goal:
+- ensure the LLM receives structured, actionable feedback when validators fail
+
+### Phase 3: HTML renderer hardening
+
+Update:
+- `scripts/md_to_html.py` — strict bibliography parsing, section fidelity
+- `templates/mckinsey_report_template.html` — targeted anchor/class alignment
+
+Goal:
+- close the most visible presentation quality gap
+
+### Phase 4: Evidence system
 
 Update/add:
 - richer `sources.json` schema
-- `check_evidence_trace.py`
-- validator enhancements
+- `scripts/check_evidence_trace.py`
+- validator enhancements for evidence-trace quality
 
 Goal:
-- improve report correctness and depth
-
-### Phase 4: Progressive assembly strengthening
-
-Update:
-- `research_engine.py`
-- continuation and assembly docs
-
-Goal:
-- improve section quality and continuity
+- improve report correctness and recommendation traceability
 
 ### Phase 5: Benchmark-based acceptance testing
 

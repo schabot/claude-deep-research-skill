@@ -164,15 +164,27 @@ These are now available inside the repo as the primary parity benchmark.
 
 ## 6. Recommended Next Work
 
-The next work should focus on **Codex execution parity**, not more migration cleanup.
+> **Architectural correction (2026-04-04):** The prior session's plan (captured in
+> `CODEX_PORT_IMPLEMENTATION_PLAN.md` and `CODEX_PORT_TODO.md`) was based on a
+> misdiagnosis. The forensic audit proposed rewriting `research_engine.py` into an
+> autonomous LLM-calling executor. That is architecturally wrong — the Python script
+> is a tool the LLM calls, not the orchestrator. The real quality gap is that
+> `SKILL.md` does not give Codex explicit, hard requirements for output length,
+> section discipline, and continuation. See `MIGRATION_NOTES.md` (2026-04-04).
+
+The next work should focus on **LLM instruction quality**, not Python orchestration.
 
 Recommended order:
 
-1. Define an explicit deep/ultradeep **playbook-mode execution policy**
-2. Tighten the report contract so deep work produces richer semantic structure by default
-3. Add semantic markdown conventions and corresponding renderer components
-4. Strengthen evidence artifacts beyond `sources.json`
-5. Re-run the benchmark scenario and compare output quality against the imported Claude sample
+1. **Package 1 (highest leverage):** Harden `SKILL.md` — surface mode thresholds,
+   section minima, and citation targets as hard requirements; add mandatory
+   section-by-section assembly protocol
+2. **Package 2:** Rewrite `reference/continuation.md` and `reference/report-assembly.md`
+   as prescriptive, numbered LLM instruction sequences matching `scripts/contracts.py`
+3. **Package 3:** Add `--json-out` to validator scripts; add `run_validation_gate.py`
+   so the LLM receives structured feedback for self-correction
+4. **Package 4:** Harden HTML renderer for bibliography/section fidelity
+5. **Package 7:** Re-run benchmark scenario and compare against the imported Claude sample
 
 ---
 

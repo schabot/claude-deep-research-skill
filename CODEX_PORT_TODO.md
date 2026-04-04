@@ -29,40 +29,67 @@ Use this checklist as the implementation tracker for the Codex runtime port. Eac
 
 ---
 
-## Package 1 — Engine rewrite to executable orchestration
-- [ ] **Replace scaffold engine with runnable phase orchestration**
-  - **Deliverables**
-    - `scripts/research_engine.py` executes phases and writes artifacts, not instruction-only stubs.
-    - Artifacts written under `research_output/<slug>-<date>/`.
-  - **Acceptance checks**
-    - A dry run produces: `run/engine_state.json`, `report.md`, `sources.json`, `run/final_manifest.json` (success or failure).
-    - CLI supports: `--query`, `--mode`, `--resume`, `--max-cycles`, `--allow-below-minimum`, `--skip-html`.
+## Package 1 — SKILL.md contract hardening (highest leverage)
 
-- [ ] **Add deterministic state persistence**
+> **Architectural note (2026-04-04):** The original Package 1 proposed rewriting
+> `research_engine.py` into an autonomous LLM-calling executor. This was
+> architecturally wrong. In a Codex skill, the Python script is a **tool** the LLM
+> calls — not the executor. The LLM is the orchestrator. Making Python autonomous
+> would create a split-brain system where two orchestrators compete for the same
+> workflow. The correct fix is to make the LLM's operating instructions explicit and
+> demanding enough that Codex produces quality output on its own. See
+> `MIGRATION_NOTES.md` (2026-04-04) for the full diagnosis.
+
+- [ ] **Surface mode thresholds and section minima directly in SKILL.md**
   - **Deliverables**
-    - `run/engine_state.json` with phase pointer, timestamps, retries/errors.
-    - State load/save paths for resume behavior.
+    - `SKILL.md` updated with explicit word targets per mode (quick: 1,500–3,500; standard: 3,500–7,000; deep: 7,500–14,000; ultradeep: 11,000–22,000).
+    - Section minima (from `scripts/contracts.py`) visible in SKILL.md as a required quality table.
+    - Citation minima per mode stated explicitly.
   - **Acceptance checks**
-    - Resume mode continues from persisted state and does not overwrite completed checkpoints unexpectedly.
+    - `SKILL.md` contains no soft-preference language ("preferred", "recommended") for quality thresholds — all are stated as hard requirements.
+    - Thresholds in `SKILL.md` match `scripts/contracts.py` exactly.
+
+- [ ] **Add mandatory section-by-section assembly protocol to SKILL.md**
+  - **Deliverables**
+    - Numbered section-drafting protocol in SKILL.md: draft → self-check word count → expand or proceed.
+    - Explicit instruction that continuation is mandatory (not optional) for deep/ultradeep when any section or total word count falls below minimum.
+  - **Acceptance checks**
+    - Protocol is a numbered step sequence, not prose guidance.
+    - Deep/ultradeep continuation trigger criteria match `scripts/contracts.py` cycle limits.
 
 ---
 
-## Package 2 — Section assembly and continuation loop
-- [ ] **Implement section-by-section assembly**
-  - **Deliverables**
-    - `scripts/assemble_report.py` to generate/evaluate section fragments.
-    - `run/sections/*.md` plus deterministic ordered compose into `report.md`.
-  - **Acceptance checks**
-    - Missing/weak sections are detectable by name and word-count metrics.
-    - `report.md` composition order is stable and reproducible.
+## Package 2 — Reference doc alignment (LLM-driven discipline)
 
-- [ ] **Implement continuation runner**
+> **Architectural note (2026-04-04):** The original Package 2 proposed a Python
+> `continuation_runner.py` that would make continuation decisions programmatically.
+> This was wrong. Continuation decisions require reading and judging content — that
+> is the LLM's role. The correct deliverable is a prescriptive reference doc the LLM
+> follows, not a Python loop that wraps LLM calls.
+
+- [ ] **Rewrite `reference/continuation.md` as prescriptive LLM instruction protocol**
   - **Deliverables**
-    - `scripts/continuation_runner.py` for cycle-based rewrites of weak sections.
-    - `run/continuation_state.json` with cycle index, per-section status, gate status, blockers.
+    - `reference/continuation.md` rewritten as a numbered, plaintext instruction set the LLM follows step-by-step.
+    - Continuation trigger conditions and exit conditions stated explicitly, matching `scripts/contracts.py` thresholds.
+    - No provider-coupled pseudocode or ambiguous narrative prose.
   - **Acceptance checks**
-    - Continuation stops on either pass condition or mode-specific cycle limit.
-    - Blocking reasons are explicit and persisted.
+    - Document reads as a standalone instruction sequence (no external context required to follow it).
+    - All numeric thresholds match `scripts/contracts.py` exactly.
+
+- [ ] **Align `reference/report-assembly.md` with contracts.py section minima**
+  - **Deliverables**
+    - Section-by-section assembly stated as a mandatory numbered protocol, not guidance.
+    - Per-section word targets by mode derived from `scripts/contracts.py`.
+  - **Acceptance checks**
+    - Section minima in `reference/report-assembly.md` match `scripts/contracts.py` exactly.
+    - No remaining language that allows single-pass packaging without section-level completeness checks.
+
+- [ ] **Add section compositor script (optional, non-generative)**
+  - **Deliverables**
+    - `scripts/assemble_report.py` as a pure file compositor: reads LLM-written `run/sections/*.md` fragments and composes ordered `report.md`. Does not generate content.
+  - **Acceptance checks**
+    - Script only reads and concatenates; no LLM calls, no content generation.
+    - Composition order is stable and deterministic.
 
 ---
 
@@ -163,14 +190,14 @@ Use this checklist as the implementation tracker for the Codex runtime port. Eac
 ---
 
 ## Suggested implementation order (checklist sequence)
-1. Package 0
-2. Package 1
-3. Package 2
-4. Package 3
-5. Package 4
-6. Package 5
-7. Package 6
-8. Package 7
+1. Package 0 ✓ (complete)
+2. Package 1 — SKILL.md contract hardening (highest leverage; fixes the root cause)
+3. Package 2 — Reference doc alignment (LLM-driven continuation discipline)
+4. Package 3 — Validator JSON outputs and unified gate runner (actionable LLM feedback)
+5. Package 4 — HTML hardening (tooling quality)
+6. Package 5 — Test fixtures and regression coverage
+7. Package 6 — Documentation contract alignment
+8. Package 7 — End-to-end smoke and release readiness
 
 ## Deferred (explicitly out of MVP)
 - [ ] Advanced multi-provider retrieval adapters beyond baseline normalization.
